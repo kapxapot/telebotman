@@ -1,4 +1,3 @@
-import { NextResponse } from "next/server";
 import { validateRequestSchema } from "@/lib/schemas";
 import { getDefaultMetadata, getLocalizedMetadata } from "@/lib/telegram";
 import { ISO_639_1_LANGUAGES } from "@/lib/languages";
@@ -20,6 +19,15 @@ function metadataDiffers(a: BotMetadata, b: BotMetadata): boolean {
   return false;
 }
 
+function isMetadataEmpty(meta: BotMetadata): boolean {
+  return (
+    !meta.name &&
+    !meta.description &&
+    !meta.short_description &&
+    meta.commands.length === 0
+  );
+}
+
 export async function POST(request: Request) {
   try {
     const body = await request.json();
@@ -27,25 +35,57 @@ export async function POST(request: Request) {
     const token = parsed.bot_token;
 
     const defaultMeta = await getDefaultMetadata(token);
+    const total = ISO_639_1_LANGUAGES.length;
 
-    const tasks = ISO_639_1_LANGUAGES.map((lang) => ({
-      key: lang.code,
-      fn: () => getLocalizedMetadata(token, lang.code),
-    }));
+    const encoder = new TextEncoder();
+    const stream = new ReadableStream({
+      async start(controller) {
+        const send = (data: Record<string, unknown>) => {
+          controller.enqueue(encoder.encode(`${JSON.stringify(data)}\n`));
+        };
 
-    const results = await runWithConcurrency(tasks, 20);
+        send({ type: "start", total });
 
-    const configuredLanguages: string[] = [];
-    for (const result of results) {
-      if (result.value && metadataDiffers(defaultMeta, result.value)) {
-        configuredLanguages.push(result.key);
-      }
-    }
+        const tasks = ISO_639_1_LANGUAGES.map((lang) => ({
+          key: lang.code,
+          fn: () => getLocalizedMetadata(token, lang.code),
+        }));
 
-    return NextResponse.json({ ok: true, configuredLanguages });
+        const configuredLanguages: string[] = [];
+
+        const results = await runWithConcurrency(
+          tasks,
+          20,
+          3,
+          (checked, t) => {
+            send({ type: "progress", checked, total: t });
+          },
+        );
+
+        for (const result of results) {
+          if (
+            result.value &&
+            !isMetadataEmpty(result.value) &&
+            metadataDiffers(defaultMeta, result.value)
+          ) {
+            configuredLanguages.push(result.key);
+          }
+        }
+
+        send({ type: "done", configuredLanguages });
+        controller.close();
+      },
+    });
+
+    return new Response(stream, {
+      headers: {
+        "Content-Type": "application/x-ndjson",
+        "Cache-Control": "no-cache",
+      },
+    });
   } catch (err) {
     const message =
       err instanceof Error ? err.message : "Failed to probe languages";
-    return NextResponse.json({ ok: false, error: message }, { status: 400 });
+    return Response.json({ ok: false, error: message }, { status: 400 });
   }
 }

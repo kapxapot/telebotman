@@ -10,6 +10,11 @@ import {
 } from "react";
 import type { BotInfo, BotMetadata } from "@/lib/types";
 
+interface ProbeProgress {
+  checked: number;
+  total: number;
+}
+
 interface AppState {
   botToken: string | null;
   openaiKey: string | null;
@@ -18,6 +23,7 @@ interface AppState {
   configuredLanguages: string[];
   languageMetadata: Record<string, BotMetadata>;
   isProbing: boolean;
+  probeProgress: ProbeProgress | null;
 }
 
 interface AppActions {
@@ -33,6 +39,7 @@ interface AppActions {
   addLanguage: (langCode: string) => void;
   removeLanguage: (langCode: string) => void;
   setIsProbing: (v: boolean) => void;
+  setProbeProgress: (p: ProbeProgress | null) => void;
   updateLanguageMetadataCache: (langCode: string, meta: BotMetadata) => void;
 }
 
@@ -48,6 +55,7 @@ const initialState: AppState = {
   configuredLanguages: [],
   languageMetadata: {},
   isProbing: false,
+  probeProgress: null,
 };
 
 export function AppProvider({ children }: { children: ReactNode }) {
@@ -117,6 +125,13 @@ export function AppProvider({ children }: { children: ReactNode }) {
     setState((prev) => ({ ...prev, isProbing: v }));
   }, []);
 
+  const setProbeProgress = useCallback(
+    (p: ProbeProgress | null) => {
+      setState((prev) => ({ ...prev, probeProgress: p }));
+    },
+    [],
+  );
+
   const updateLanguageMetadataCache = useCallback(
     (langCode: string, meta: BotMetadata) => {
       setState((prev) => ({
@@ -138,6 +153,7 @@ export function AppProvider({ children }: { children: ReactNode }) {
       addLanguage,
       removeLanguage,
       setIsProbing,
+      setProbeProgress,
       updateLanguageMetadataCache,
     }),
     [
@@ -150,6 +166,7 @@ export function AppProvider({ children }: { children: ReactNode }) {
       addLanguage,
       removeLanguage,
       setIsProbing,
+      setProbeProgress,
       updateLanguageMetadataCache,
     ],
   );

@@ -31,8 +31,10 @@ export function LanguageTabs() {
     setConfiguredLanguages,
     setDefaultMetadata,
     setIsProbing,
+    setProbeProgress,
     addLanguage,
     isProbing,
+    probeProgress,
   } = useApp();
 
   const [activeTab, setActiveTab] = useState("default");
@@ -57,20 +59,59 @@ export function LanguageTabs() {
     }
 
     setIsProbing(true);
+    setProbeProgress(null);
     try {
-      const probeRes = await fetch("/api/telegram/probe-languages", {
+      const res = await fetch("/api/telegram/probe-languages", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ bot_token: botToken }),
       });
-      const probeData = await probeRes.json();
-      if (probeData.ok) {
-        setConfiguredLanguages(probeData.configuredLanguages);
+
+      if (!res.ok || !res.body) {
+        setIsProbing(false);
+        return;
+      }
+
+      const reader = res.body.getReader();
+      const decoder = new TextDecoder();
+      let buffer = "";
+
+      while (true) {
+        const { done, value } = await reader.read();
+        if (done) break;
+
+        buffer += decoder.decode(value, { stream: true });
+        const lines = buffer.split("\n");
+        buffer = lines.pop() ?? "";
+
+        for (const line of lines) {
+          if (!line.trim()) continue;
+          try {
+            const event = JSON.parse(line);
+            if (event.type === "progress") {
+              setProbeProgress({
+                checked: event.checked,
+                total: event.total,
+              });
+            } else if (event.type === "done") {
+              setConfiguredLanguages(event.configuredLanguages);
+            }
+          } catch {
+            // skip malformed lines
+          }
+        }
       }
     } finally {
       setIsProbing(false);
+      setProbeProgress(null);
     }
-  }, [botToken, setDefaultMetadata, setConfiguredLanguages, setIsProbing]);
+  }, [
+    botToken,
+    setDefaultMetadata,
+    setConfiguredLanguages,
+    setIsProbing,
+    setProbeProgress,
+  ]);
 
   useEffect(() => {
     fetchInitialData();
@@ -89,8 +130,32 @@ export function LanguageTabs() {
     }
   }
 
+  const progressPercent =
+    probeProgress && probeProgress.total > 0
+      ? Math.round((probeProgress.checked / probeProgress.total) * 100)
+      : 0;
+
   return (
     <Tabs value={activeTab} onValueChange={setActiveTab}>
+      {isProbing && probeProgress && (
+        <div className="mb-4 space-y-1.5">
+          <div className="flex items-center justify-between text-sm">
+            <span className="text-muted-foreground">
+              Scanning languages...
+            </span>
+            <span className="tabular-nums font-medium">
+              {probeProgress.checked} / {probeProgress.total}
+            </span>
+          </div>
+          <div className="bg-muted h-2 w-full overflow-hidden rounded-full">
+            <div
+              className="h-full rounded-full bg-green-500 transition-all duration-200"
+              style={{ width: `${progressPercent}%` }}
+            />
+          </div>
+        </div>
+      )}
+
       <div className="flex min-w-0 items-center gap-4">
         <div className="hide-scrollbar min-w-0 flex-1 overflow-x-auto overflow-y-hidden">
           <TabsList className="inline-flex w-max">

@@ -8,9 +8,12 @@ export async function runWithConcurrency<T>(
   tasks: { key: string; fn: () => Promise<T> }[],
   concurrency: number = 20,
   maxRetries: number = 3,
+  onProgress?: (completed: number, total: number) => void,
 ): Promise<RateLimitedResult<T>[]> {
   const results: RateLimitedResult<T>[] = [];
   let index = 0;
+  let completed = 0;
+  const total = tasks.length;
 
   async function runNext(): Promise<void> {
     while (index < tasks.length) {
@@ -43,6 +46,9 @@ export async function runWithConcurrency<T>(
       if (lastError) {
         results[current] = { error: lastError, key: task.key };
       }
+
+      completed++;
+      onProgress?.(completed, total);
     }
   }
 

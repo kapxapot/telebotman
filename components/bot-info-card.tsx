@@ -10,7 +10,7 @@ import { Button } from "@/components/ui/button";
 import { LogOut } from "lucide-react";
 
 export function BotInfoCard() {
-  const { botInfo, disconnect, isProbing } = useApp();
+  const { botInfo, disconnect } = useApp();
 
   if (!botInfo) return null;
 
@@ -24,9 +24,6 @@ export function BotInfoCard() {
               <Badge variant="secondary" className="bg-green-100 text-green-800 dark:bg-green-900 dark:text-green-200">
                 Connected
               </Badge>
-              {isProbing && (
-                <Badge variant="outline">Scanning languages...</Badge>
-              )}
             </div>
             <p className="text-muted-foreground text-sm">@{botInfo.username}</p>
           </div>
