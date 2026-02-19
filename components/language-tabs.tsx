@@ -3,6 +3,9 @@
 import { useCallback, useEffect, useState } from "react";
 import { useApp } from "./app-provider";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
+import { Button } from "@/components/ui/button";
+import { Input } from "@/components/ui/input";
+import { Badge } from "@/components/ui/badge";
 import {
   Dialog,
   DialogContent,
@@ -11,16 +14,7 @@ import {
   DialogTitle,
   DialogTrigger,
 } from "@/components/ui/dialog";
-import {
-  Select,
-  SelectContent,
-  SelectItem,
-  SelectTrigger,
-  SelectValue,
-} from "@/components/ui/select";
-import { Button } from "@/components/ui/button";
-import { Badge } from "@/components/ui/badge";
-import { Plus, Loader2 } from "lucide-react";
+import { Plus, Loader2, Search } from "lucide-react";
 import { MetadataEditor } from "./metadata-editor";
 import { ISO_639_1_LANGUAGES, getLanguageName } from "@/lib/languages";
 
@@ -39,7 +33,7 @@ export function LanguageTabs() {
 
   const [activeTab, setActiveTab] = useState("default");
   const [addDialogOpen, setAddDialogOpen] = useState(false);
-  const [selectedLang, setSelectedLang] = useState("");
+  const [search, setSearch] = useState("");
 
   const fetchInitialData = useCallback(async () => {
     if (!botToken) return;
@@ -121,13 +115,20 @@ export function LanguageTabs() {
     (l) => !configuredLanguages.includes(l.code),
   );
 
-  function handleAddLanguage() {
-    if (selectedLang) {
-      addLanguage(selectedLang);
-      setActiveTab(selectedLang);
-      setAddDialogOpen(false);
-      setSelectedLang("");
-    }
+  const query = search.toLowerCase().trim();
+  const filteredLanguages = query
+    ? availableLanguages.filter(
+        (l) =>
+          l.name.toLowerCase().includes(query) ||
+          l.code.toLowerCase().includes(query),
+      )
+    : availableLanguages;
+
+  function handleSelectLanguage(code: string) {
+    addLanguage(code);
+    setActiveTab(code);
+    setAddDialogOpen(false);
+    setSearch("");
   }
 
   const progressPercent =
@@ -171,7 +172,7 @@ export function LanguageTabs() {
           </TabsList>
         </div>
 
-        <Dialog open={addDialogOpen} onOpenChange={setAddDialogOpen}>
+        <Dialog open={addDialogOpen} onOpenChange={(open) => { setAddDialogOpen(open); if (!open) setSearch(""); }}>
           <DialogTrigger asChild>
             <Button variant="outline" size="sm" disabled={isProbing} className="shrink-0">
               {isProbing ? (
@@ -186,29 +187,37 @@ export function LanguageTabs() {
             <DialogHeader>
               <DialogTitle>Add Language</DialogTitle>
               <DialogDescription>
-                Select a language to add a new localization.
+                Search and select a language to add.
               </DialogDescription>
             </DialogHeader>
-            <div className="space-y-4">
-              <Select value={selectedLang} onValueChange={setSelectedLang}>
-                <SelectTrigger>
-                  <SelectValue placeholder="Select a language" />
-                </SelectTrigger>
-                <SelectContent>
-                  {availableLanguages.map((lang) => (
-                    <SelectItem key={lang.code} value={lang.code}>
-                      {lang.name} ({lang.code})
-                    </SelectItem>
-                  ))}
-                </SelectContent>
-              </Select>
-              <Button
-                onClick={handleAddLanguage}
-                disabled={!selectedLang}
-                className="w-full"
-              >
-                Add
-              </Button>
+            <div className="relative">
+              <Search className="text-muted-foreground absolute top-2.5 left-3 h-4 w-4" />
+              <Input
+                placeholder="Search languages..."
+                value={search}
+                onChange={(e) => setSearch(e.target.value)}
+                className="pl-9"
+                autoFocus
+              />
+            </div>
+            <div className="max-h-64 overflow-y-auto rounded-md border">
+              {filteredLanguages.length === 0 ? (
+                <p className="text-muted-foreground p-3 text-center text-sm">
+                  No languages found.
+                </p>
+              ) : (
+                filteredLanguages.map((lang) => (
+                  <button
+                    key={lang.code}
+                    type="button"
+                    onClick={() => handleSelectLanguage(lang.code)}
+                    className="hover:bg-accent w-full cursor-pointer px-3 py-2 text-left text-sm transition-colors"
+                  >
+                    {lang.name}{" "}
+                    <span className="text-muted-foreground">({lang.code})</span>
+                  </button>
+                ))
+              )}
             </div>
           </DialogContent>
         </Dialog>

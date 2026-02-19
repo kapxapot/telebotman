@@ -103,7 +103,7 @@ export function AppProvider({ children }: { children: ReactNode }) {
       if (prev.configuredLanguages.includes(langCode)) return prev;
       return {
         ...prev,
-        configuredLanguages: [...prev.configuredLanguages, langCode].sort(),
+        configuredLanguages: [...prev.configuredLanguages, langCode],
       };
     });
   }, []);
