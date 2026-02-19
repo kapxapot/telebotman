@@ -53,7 +53,7 @@ export function TokenForm() {
     <div className="flex min-h-screen items-center justify-center p-4">
       <Card className="w-full max-w-md">
         <CardHeader className="text-center">
-          <CardTitle className="text-2xl">TeleBotMan</CardTitle>
+          <CardTitle className="text-2xl">Telegram Bot Manager</CardTitle>
           <CardDescription>
             Connect your Telegram bot to manage its metadata, localizations, and
             translations.

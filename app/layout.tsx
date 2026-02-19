@@ -14,7 +14,7 @@ const geistMono = Geist_Mono({
 });
 
 export const metadata: Metadata = {
-  title: "TeleBotMan - Telegram Bot Metadata Manager",
+  title: "Telegram Bot Manager",
   description:
     "View, manage, localize, and auto-translate Telegram bot metadata.",
 };
