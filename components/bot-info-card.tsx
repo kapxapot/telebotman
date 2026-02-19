@@ -31,7 +31,7 @@ export function BotInfoCard() {
             <p className="text-muted-foreground text-sm">@{botInfo.username}</p>
           </div>
         </div>
-        <Button variant="ghost" size="sm" onClick={disconnect}>
+        <Button variant="outline" size="sm" onClick={disconnect}>
           <LogOut className="mr-2 h-4 w-4" />
           Disconnect
         </Button>

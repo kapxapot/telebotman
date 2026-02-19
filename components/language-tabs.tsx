@@ -19,7 +19,6 @@ import {
   SelectValue,
 } from "@/components/ui/select";
 import { Button } from "@/components/ui/button";
-import { ScrollArea, ScrollBar } from "@/components/ui/scroll-area";
 import { Badge } from "@/components/ui/badge";
 import { Plus, Loader2 } from "lucide-react";
 import { MetadataEditor } from "./metadata-editor";
@@ -92,8 +91,8 @@ export function LanguageTabs() {
 
   return (
     <Tabs value={activeTab} onValueChange={setActiveTab}>
-      <div className="flex items-center gap-2">
-        <ScrollArea className="flex-1">
+      <div className="flex min-w-0 items-center gap-4">
+        <div className="hide-scrollbar min-w-0 flex-1 overflow-x-auto overflow-y-hidden">
           <TabsList className="inline-flex w-max">
             <TabsTrigger value="default">Default</TabsTrigger>
             {configuredLanguages.map((code) => (
@@ -105,12 +104,11 @@ export function LanguageTabs() {
               </TabsTrigger>
             ))}
           </TabsList>
-          <ScrollBar orientation="horizontal" />
-        </ScrollArea>
+        </div>
 
         <Dialog open={addDialogOpen} onOpenChange={setAddDialogOpen}>
           <DialogTrigger asChild>
-            <Button variant="outline" size="sm" disabled={isProbing}>
+            <Button variant="outline" size="sm" disabled={isProbing} className="shrink-0">
               {isProbing ? (
                 <Loader2 className="mr-1 h-3 w-3 animate-spin" />
               ) : (
