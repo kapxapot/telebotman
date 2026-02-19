@@ -39,7 +39,12 @@ interface AppActions {
   addLanguage: (langCode: string) => void;
   removeLanguage: (langCode: string) => void;
   setIsProbing: (v: boolean) => void;
-  setProbeProgress: (p: ProbeProgress | null) => void;
+  setProbeProgress: (
+    p:
+      | ProbeProgress
+      | null
+      | ((prev: ProbeProgress | null) => ProbeProgress | null),
+  ) => void;
   updateLanguageMetadataCache: (langCode: string, meta: BotMetadata) => void;
 }
 
@@ -126,8 +131,17 @@ export function AppProvider({ children }: { children: ReactNode }) {
   }, []);
 
   const setProbeProgress = useCallback(
-    (p: ProbeProgress | null) => {
-      setState((prev) => ({ ...prev, probeProgress: p }));
+    (
+      p:
+        | ProbeProgress
+        | null
+        | ((prev: ProbeProgress | null) => ProbeProgress | null),
+    ) => {
+      setState((prev) => ({
+        ...prev,
+        probeProgress:
+          typeof p === "function" ? p(prev.probeProgress) : p,
+      }));
     },
     [],
   );

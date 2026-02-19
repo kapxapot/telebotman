@@ -83,10 +83,11 @@ export function LanguageTabs() {
           try {
             const event = JSON.parse(line);
             if (event.type === "progress") {
-              setProbeProgress({
-                checked: event.checked,
-                total: event.total,
-              });
+              setProbeProgress((prev) =>
+                prev && prev.checked >= event.checked
+                  ? prev
+                  : { checked: event.checked, total: event.total },
+              );
             } else if (event.type === "done") {
               setConfiguredLanguages(event.configuredLanguages);
             }
@@ -136,6 +137,8 @@ export function LanguageTabs() {
       ? Math.round((probeProgress.checked / probeProgress.total) * 100)
       : 0;
 
+  const progressHue = Math.round((progressPercent / 100) * 130);
+
   return (
     <Tabs value={activeTab} onValueChange={setActiveTab}>
       {isProbing && probeProgress && (
@@ -150,8 +153,11 @@ export function LanguageTabs() {
           </div>
           <div className="bg-muted h-2 w-full overflow-hidden rounded-full">
             <div
-              className="h-full rounded-full bg-green-500 transition-all duration-200"
-              style={{ width: `${progressPercent}%` }}
+              className="h-full rounded-full"
+              style={{
+                width: `${progressPercent}%`,
+                backgroundColor: `hsl(${progressHue}, 80%, 45%)`,
+              }}
             />
           </div>
         </div>
