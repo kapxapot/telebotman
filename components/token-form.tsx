@@ -12,7 +12,7 @@ import {
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import { Label } from "@/components/ui/label";
-import { Loader2 } from "lucide-react";
+import { Loader2, Eye, EyeOff } from "lucide-react";
 
 interface FieldErrors {
   bot_token?: string;
@@ -26,6 +26,8 @@ export function TokenForm() {
   const [error, setError] = useState<string | null>(null);
   const [fieldErrors, setFieldErrors] = useState<FieldErrors>({});
   const [loading, setLoading] = useState(false);
+  const [showToken, setShowToken] = useState(false);
+  const [showOpenaiKey, setShowOpenaiKey] = useState(false);
 
   async function handleSubmit(e: React.FormEvent) {
     e.preventDefault();
@@ -73,15 +75,30 @@ export function TokenForm() {
           <form onSubmit={handleSubmit} className="space-y-4">
             <div className="space-y-2">
               <Label htmlFor="bot-token">Bot Token</Label>
-              <Input
-                id="bot-token"
-                type="password"
-                placeholder="123456789:ABCdefGHI..."
-                value={token}
-                onChange={(e) => setToken(e.target.value)}
-                required
-                autoFocus
-              />
+              <div className="relative">
+                <Input
+                  id="bot-token"
+                  type={showToken ? "text" : "password"}
+                  placeholder="123456789:ABCdefGHI..."
+                  value={token}
+                  onChange={(e) => setToken(e.target.value)}
+                  required
+                  autoFocus
+                  className="pr-10"
+                />
+                <button
+                  type="button"
+                  onClick={() => setShowToken(!showToken)}
+                  className="text-muted-foreground hover:text-foreground absolute top-1/2 right-3 -translate-y-1/2 cursor-pointer"
+                  tabIndex={-1}
+                >
+                  {showToken ? (
+                    <EyeOff className="h-4 w-4" />
+                  ) : (
+                    <Eye className="h-4 w-4" />
+                  )}
+                </button>
+              </div>
               {fieldErrors.bot_token && (
                 <p className="text-destructive text-sm">
                   {fieldErrors.bot_token}
@@ -96,13 +113,28 @@ export function TokenForm() {
                   (optional)
                 </span>
               </Label>
-              <Input
-                id="openai-key"
-                type="password"
-                placeholder="sk-..."
-                value={openaiKey}
-                onChange={(e) => setOpenaiKey(e.target.value)}
-              />
+              <div className="relative">
+                <Input
+                  id="openai-key"
+                  type={showOpenaiKey ? "text" : "password"}
+                  placeholder="sk-..."
+                  value={openaiKey}
+                  onChange={(e) => setOpenaiKey(e.target.value)}
+                  className="pr-10"
+                />
+                <button
+                  type="button"
+                  onClick={() => setShowOpenaiKey(!showOpenaiKey)}
+                  className="text-muted-foreground hover:text-foreground absolute top-1/2 right-3 -translate-y-1/2 cursor-pointer"
+                  tabIndex={-1}
+                >
+                  {showOpenaiKey ? (
+                    <EyeOff className="h-4 w-4" />
+                  ) : (
+                    <Eye className="h-4 w-4" />
+                  )}
+                </button>
+              </div>
               {fieldErrors.openai_api_key ? (
                 <p className="text-destructive text-sm">
                   {fieldErrors.openai_api_key}

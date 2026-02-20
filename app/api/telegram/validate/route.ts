@@ -23,7 +23,11 @@ export async function POST(request: Request) {
         { status: 400 },
       );
     }
-    const message = err instanceof Error ? err.message : "Validation failed";
+    const raw = err instanceof Error ? err.message : "Validation failed";
+    const message =
+      raw === "Unauthorized" || raw.includes("Not Found")
+        ? "Invalid bot token. Please check your token and try again."
+        : raw;
     return NextResponse.json({ ok: false, error: message }, { status: 400 });
   }
 }
