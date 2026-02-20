@@ -11,20 +11,26 @@ import {
 } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
-import { Alert, AlertDescription } from "@/components/ui/alert";
 import { Label } from "@/components/ui/label";
 import { Loader2 } from "lucide-react";
+
+interface FieldErrors {
+  bot_token?: string;
+  openai_api_key?: string;
+}
 
 export function TokenForm() {
   const { connect } = useApp();
   const [token, setToken] = useState("");
   const [openaiKey, setOpenaiKey] = useState("");
   const [error, setError] = useState<string | null>(null);
+  const [fieldErrors, setFieldErrors] = useState<FieldErrors>({});
   const [loading, setLoading] = useState(false);
 
   async function handleSubmit(e: React.FormEvent) {
     e.preventDefault();
     setError(null);
+    setFieldErrors({});
     setLoading(true);
 
     try {
@@ -37,7 +43,11 @@ export function TokenForm() {
       const data = await res.json();
 
       if (!data.ok) {
-        setError(data.error ?? "Validation failed");
+        if (data.fieldErrors) {
+          setFieldErrors(data.fieldErrors);
+        } else {
+          setError(data.error ?? "Validation failed");
+        }
         return;
       }
 
@@ -72,6 +82,11 @@ export function TokenForm() {
                 required
                 autoFocus
               />
+              {fieldErrors.bot_token && (
+                <p className="text-destructive text-sm">
+                  {fieldErrors.bot_token}
+                </p>
+              )}
             </div>
 
             <div className="space-y-2">
@@ -88,15 +103,19 @@ export function TokenForm() {
                 value={openaiKey}
                 onChange={(e) => setOpenaiKey(e.target.value)}
               />
-              <p className="text-muted-foreground text-xs">
-                Required only for AI-powered translations.
-              </p>
+              {fieldErrors.openai_api_key ? (
+                <p className="text-destructive text-sm">
+                  {fieldErrors.openai_api_key}
+                </p>
+              ) : (
+                <p className="text-muted-foreground text-xs">
+                  Required only for AI-powered translations.
+                </p>
+              )}
             </div>
 
             {error && (
-              <Alert variant="destructive">
-                <AlertDescription>{error}</AlertDescription>
-              </Alert>
+              <p className="text-destructive text-sm">{error}</p>
             )}
 
             <Button type="submit" className="w-full" disabled={loading}>
