@@ -273,7 +273,6 @@ export function MetadataEditor({ languageCode }: MetadataEditorProps) {
         <CommandsEditor
           commands={commands}
           onChange={setCommands}
-          readOnlyCommands={!isDefault}
         />
 
         <div className="pt-4 flex items-center justify-between">

@@ -19,6 +19,8 @@ interface FieldErrors {
   openai_api_key?: string;
 }
 
+const SHOW_AI_KEY_INPUT = false;
+
 export function TokenForm() {
   const { connect } = useApp();
   const [token, setToken] = useState("");
@@ -67,8 +69,7 @@ export function TokenForm() {
         <CardHeader className="text-center">
           <CardTitle className="text-2xl">Telegram Bot Manager</CardTitle>
           <CardDescription>
-            Connect your Telegram bot to manage its metadata, localizations, and
-            translations.
+            Connect your Telegram bot to manage and localize its metadata.
           </CardDescription>
         </CardHeader>
         <CardContent>
@@ -106,45 +107,47 @@ export function TokenForm() {
               )}
             </div>
 
-            <div className="space-y-2">
-              <Label htmlFor="openai-key">
-                OpenAI API Key{" "}
-                <span className="text-muted-foreground font-normal">
-                  (optional)
-                </span>
-              </Label>
-              <div className="relative">
-                <Input
-                  id="openai-key"
-                  type={showOpenaiKey ? "text" : "password"}
-                  placeholder="sk-..."
-                  value={openaiKey}
-                  onChange={(e) => setOpenaiKey(e.target.value)}
-                  className="pr-10"
-                />
-                <button
-                  type="button"
-                  onClick={() => setShowOpenaiKey(!showOpenaiKey)}
-                  className="text-muted-foreground hover:text-foreground absolute top-1/2 right-3 -translate-y-1/2 cursor-pointer"
-                  tabIndex={-1}
-                >
-                  {showOpenaiKey ? (
-                    <EyeOff className="size-4" />
-                  ) : (
-                    <Eye className="size-4" />
-                  )}
-                </button>
+            {SHOW_AI_KEY_INPUT && (
+              <div className="space-y-2">
+                <Label htmlFor="openai-key">
+                  OpenAI API Key{" "}
+                  <span className="text-muted-foreground font-normal">
+                    (optional)
+                  </span>
+                </Label>
+                <div className="relative">
+                  <Input
+                    id="openai-key"
+                    type={showOpenaiKey ? "text" : "password"}
+                    placeholder="sk-..."
+                    value={openaiKey}
+                    onChange={(e) => setOpenaiKey(e.target.value)}
+                    className="pr-10"
+                  />
+                  <button
+                    type="button"
+                    onClick={() => setShowOpenaiKey(!showOpenaiKey)}
+                    className="text-muted-foreground hover:text-foreground absolute top-1/2 right-3 -translate-y-1/2 cursor-pointer"
+                    tabIndex={-1}
+                  >
+                    {showOpenaiKey ? (
+                      <EyeOff className="size-4" />
+                    ) : (
+                      <Eye className="size-4" />
+                    )}
+                  </button>
+                </div>
+                {fieldErrors.openai_api_key ? (
+                  <p className="text-destructive text-sm">
+                    {fieldErrors.openai_api_key}
+                  </p>
+                ) : (
+                  <p className="text-muted-foreground text-xs">
+                    Required only for AI-powered translations.
+                  </p>
+                )}
               </div>
-              {fieldErrors.openai_api_key ? (
-                <p className="text-destructive text-sm">
-                  {fieldErrors.openai_api_key}
-                </p>
-              ) : (
-                <p className="text-muted-foreground text-xs">
-                  Required only for AI-powered translations.
-                </p>
-              )}
-            </div>
+            )}
 
             {error && (
               <p className="text-destructive text-sm">{error}</p>
