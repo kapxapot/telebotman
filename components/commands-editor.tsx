@@ -59,7 +59,7 @@ export function CommandsEditor({
   return (
     <div className="space-y-2">
       <div className="flex items-center gap-1">
-        <h4 className="text-sm font-medium">Commands</h4>
+        <h4 className="text-sm font-medium mr-1">Commands</h4>
         {onSyncFromDefault && (
           <Tooltip>
             <TooltipTrigger asChild>

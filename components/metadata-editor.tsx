@@ -262,7 +262,7 @@ export function MetadataEditor({ languageCode }: MetadataEditorProps) {
         <div className="space-y-2">
           <div className="flex items-center justify-between">
             <div className="flex items-center gap-1">
-              <Label htmlFor={`name-${languageCode}`}>Name</Label>
+              <Label htmlFor={`name-${languageCode}`} className="mr-1">Name</Label>
               {!isDefault && defaultMetadata && (
                 <SyncFromDefaultButton onClick={() => setName(defaultMetadata.name)} />
               )}
@@ -286,7 +286,7 @@ export function MetadataEditor({ languageCode }: MetadataEditorProps) {
         <div className="space-y-2">
           <div className="flex items-center justify-between">
             <div className="flex items-center gap-1">
-              <Label htmlFor={`short-desc-${languageCode}`}>
+              <Label htmlFor={`short-desc-${languageCode}`} className="mr-1">
                 Short Description
               </Label>
               {!isDefault && defaultMetadata && (
@@ -313,7 +313,7 @@ export function MetadataEditor({ languageCode }: MetadataEditorProps) {
         <div className="space-y-2">
           <div className="flex items-center justify-between">
             <div className="flex items-center gap-1">
-              <Label htmlFor={`desc-${languageCode}`}>Description</Label>
+              <Label htmlFor={`desc-${languageCode}`} className="mr-1">Description</Label>
               {!isDefault && defaultMetadata && (
                 <SyncFromDefaultButton onClick={() => setDescription(defaultMetadata.description)} />
               )}
