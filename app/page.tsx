@@ -4,6 +4,7 @@ import { AppProvider, useApp } from "@/components/app-provider";
 import { TokenForm } from "@/components/token-form";
 import { BotInfoCard } from "@/components/bot-info-card";
 import { LanguageTabs } from "@/components/language-tabs";
+import { Footer } from "@/components/footer";
 import Image from "next/image";
 
 function AppContent() {
@@ -23,6 +24,7 @@ function AppContent() {
       </div>
       <BotInfoCard />
       <LanguageTabs />
+      <Footer />
     </div>
   );
 }

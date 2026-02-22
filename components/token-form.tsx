@@ -13,6 +13,7 @@ import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import { Label } from "@/components/ui/label";
 import { Loader2, Eye, EyeOff } from "lucide-react";
+import { Footer } from "@/components/footer";
 import Image from "next/image";
 
 interface FieldErrors {
@@ -65,7 +66,7 @@ export function TokenForm() {
   }
 
   return (
-    <div className="flex min-h-screen items-center justify-center p-4">
+    <div className="flex min-h-screen flex-col items-center justify-center p-4">
       <Card className="w-full max-w-md">
         <CardHeader className="text-center">
           <Image
@@ -171,6 +172,7 @@ export function TokenForm() {
           </form>
         </CardContent>
       </Card>
+      <Footer />
     </div>
   );
 }
