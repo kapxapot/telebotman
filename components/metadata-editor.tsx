@@ -7,7 +7,7 @@ import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
 import { Button } from "@/components/ui/button";
 import { Label } from "@/components/ui/label";
-import { Info, Loader2, Save, Trash2, ClipboardPaste } from "lucide-react";
+import { Info, Loader2, Save, Trash2, ClipboardPaste, Eraser } from "lucide-react";
 import {
   Tooltip,
   TooltipContent,
@@ -44,6 +44,25 @@ function SyncFromDefaultButton({ onClick }: { onClick: () => void }) {
         </Button>
       </TooltipTrigger>
       <TooltipContent>Copy from default</TooltipContent>
+    </Tooltip>
+  );
+}
+
+function ClearFieldButton({ onClick }: { onClick: () => void }) {
+  return (
+    <Tooltip>
+      <TooltipTrigger asChild>
+        <Button
+          type="button"
+          variant="ghost"
+          size="icon"
+          className="size-6 text-destructive hover:text-destructive"
+          onClick={onClick}
+        >
+          <Eraser className="size-3.5" />
+        </Button>
+      </TooltipTrigger>
+      <TooltipContent>Clear (fall back to default)</TooltipContent>
     </Tooltip>
   );
 }
@@ -247,6 +266,9 @@ export function MetadataEditor({ languageCode }: MetadataEditorProps) {
               {!isDefault && defaultMetadata && (
                 <SyncFromDefaultButton onClick={() => setName(defaultMetadata.name)} />
               )}
+              {!isDefault && (
+                <ClearFieldButton onClick={() => setName("")} />
+              )}
             </div>
             <span className="text-muted-foreground text-xs">
               {name.length}/64
@@ -270,6 +292,9 @@ export function MetadataEditor({ languageCode }: MetadataEditorProps) {
               {!isDefault && defaultMetadata && (
                 <SyncFromDefaultButton onClick={() => setShortDescription(defaultMetadata.short_description)} />
               )}
+              {!isDefault && (
+                <ClearFieldButton onClick={() => setShortDescription("")} />
+              )}
             </div>
             <span className="text-muted-foreground text-xs">
               {shortDescription.length}/120
@@ -292,6 +317,9 @@ export function MetadataEditor({ languageCode }: MetadataEditorProps) {
               {!isDefault && defaultMetadata && (
                 <SyncFromDefaultButton onClick={() => setDescription(defaultMetadata.description)} />
               )}
+              {!isDefault && (
+                <ClearFieldButton onClick={() => setDescription("")} />
+              )}
             </div>
             <span className="text-muted-foreground text-xs">
               {description.length}/512
@@ -310,6 +338,7 @@ export function MetadataEditor({ languageCode }: MetadataEditorProps) {
         <CommandsEditor
           commands={commands}
           onChange={setCommands}
+          onResetToDefault={!isDefault ? () => setCommands([]) : undefined}
           onSyncFromDefault={!isDefault && defaultMetadata ? () => {
             const defaultCmds = defaultMetadata.commands;
             const existingNames = new Set(commands.map((c) => c.command));

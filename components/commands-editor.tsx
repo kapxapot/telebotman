@@ -3,7 +3,7 @@
 import { useEffect, useRef } from "react";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
-import { Plus, Trash2, ClipboardPaste } from "lucide-react";
+import { Plus, Trash2, ClipboardPaste, Eraser } from "lucide-react";
 import {
   Tooltip,
   TooltipContent,
@@ -16,6 +16,7 @@ interface CommandsEditorProps {
   onChange: (commands: BotCommand[]) => void;
   readOnlyCommands?: boolean;
   onSyncFromDefault?: () => void;
+  onResetToDefault?: () => void;
 }
 
 export function CommandsEditor({
@@ -23,6 +24,7 @@ export function CommandsEditor({
   onChange,
   readOnlyCommands = false,
   onSyncFromDefault,
+  onResetToDefault,
 }: CommandsEditorProps) {
   const pendingFocusRef = useRef(false);
   const lastCommandInputRef = useRef<HTMLInputElement>(null);
@@ -72,6 +74,22 @@ export function CommandsEditor({
               </Button>
             </TooltipTrigger>
             <TooltipContent>Add missing commands from default</TooltipContent>
+          </Tooltip>
+        )}
+        {onResetToDefault && (
+          <Tooltip>
+            <TooltipTrigger asChild>
+              <Button
+                type="button"
+                variant="ghost"
+                size="icon"
+                className="size-6 text-destructive hover:text-destructive"
+                onClick={onResetToDefault}
+              >
+                <Eraser className="size-3.5" />
+              </Button>
+            </TooltipTrigger>
+            <TooltipContent>Clear all commands (fall back to default)</TooltipContent>
           </Tooltip>
         )}
       </div>
