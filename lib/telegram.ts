@@ -118,13 +118,16 @@ export async function deleteLocalization(
   token: string,
   languageCode: string,
 ): Promise<{ field: string; ok: boolean; error?: string }[]> {
-  const body = { language_code: languageCode };
+  const langBody = { language_code: languageCode };
 
   const results = await Promise.allSettled([
-    callTelegram(token, "deleteMyName", body),
-    callTelegram(token, "deleteMyDescription", body),
-    callTelegram(token, "deleteMyShortDescription", body),
-    callTelegram(token, "deleteMyCommands", body),
+    callTelegram(token, "setMyName", { name: "", ...langBody }),
+    callTelegram(token, "setMyDescription", { description: "", ...langBody }),
+    callTelegram(token, "setMyShortDescription", {
+      short_description: "",
+      ...langBody,
+    }),
+    callTelegram(token, "deleteMyCommands", langBody),
   ]);
 
   const fields = ["name", "description", "short_description", "commands"];

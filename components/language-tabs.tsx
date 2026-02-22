@@ -1,6 +1,6 @@
 "use client";
 
-import { memo, useCallback, useEffect, useMemo, useState } from "react";
+import { memo, useCallback, useEffect, useMemo, useRef, useState } from "react";
 import { useApp } from "./app-provider";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Button } from "@/components/ui/button";
@@ -58,6 +58,7 @@ export function LanguageTabs() {
   } = useApp();
 
   const [activeTab, setActiveTab] = useState("default");
+  const prevLanguagesRef = useRef(configuredLanguages);
   const [addDialogOpen, setAddDialogOpen] = useState(false);
   const [search, setSearch] = useState("");
   const [selectedCode, setSelectedCode] = useState<string | null>(null);
@@ -138,6 +139,17 @@ export function LanguageTabs() {
   useEffect(() => {
     fetchInitialData();
   }, [fetchInitialData]);
+
+  useEffect(() => {
+    const allTabs = ["default", ...configuredLanguages];
+    if (!allTabs.includes(activeTab)) {
+      const prevAll = ["default", ...prevLanguagesRef.current];
+      const oldIndex = prevAll.indexOf(activeTab);
+      const fallback = oldIndex > 0 ? prevAll[oldIndex - 1] : "default";
+      setActiveTab(allTabs.includes(fallback) ? fallback : "default");
+    }
+    prevLanguagesRef.current = configuredLanguages;
+  }, [configuredLanguages, activeTab]);
 
   const availableLanguages = useMemo(
     () => ISO_639_1_LANGUAGES.filter((l) => !configuredLanguages.includes(l.code)),
