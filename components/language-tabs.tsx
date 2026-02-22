@@ -1,22 +1,50 @@
 "use client";
 
-import { useCallback, useEffect, useState } from "react";
+import { memo, useCallback, useEffect, useMemo, useState } from "react";
 import { useApp } from "./app-provider";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
-import { Badge } from "@/components/ui/badge";
 import {
   Dialog,
   DialogContent,
   DialogDescription,
+  DialogFooter,
   DialogHeader,
   DialogTitle,
   DialogTrigger,
 } from "@/components/ui/dialog";
 import { Plus, Loader2, Search } from "lucide-react";
 import { MetadataEditor } from "./metadata-editor";
-import { ISO_639_1_LANGUAGES, getLanguageName } from "@/lib/languages";
+import { ISO_639_1_LANGUAGES, getLanguageName, getCountryCode } from "@/lib/languages";
+import type { Language } from "@/lib/languages";
+
+const LanguageRow = memo(function LanguageRow({
+  lang,
+  selected,
+  onSelect,
+}: {
+  lang: Language;
+  selected: boolean;
+  onSelect: (code: string) => void;
+}) {
+  const country = getCountryCode(lang.code);
+  return (
+    <button
+      type="button"
+      onClick={() => onSelect(lang.code)}
+      className={`w-full cursor-pointer px-3 py-2 text-left text-sm transition-colors ${
+        selected ? "bg-accent" : "hover:bg-accent/50"
+      }`}
+    >
+      {country && (
+        <span className={`fi fi-${country.toLowerCase()} mr-2`} />
+      )}
+      {lang.name}{" "}
+      <span className="text-muted-foreground">({lang.code})</span>
+    </button>
+  );
+});
 
 export function LanguageTabs() {
   const {
@@ -34,6 +62,7 @@ export function LanguageTabs() {
   const [activeTab, setActiveTab] = useState("default");
   const [addDialogOpen, setAddDialogOpen] = useState(false);
   const [search, setSearch] = useState("");
+  const [selectedCode, setSelectedCode] = useState<string | null>(null);
 
   const fetchInitialData = useCallback(async () => {
     if (!botToken) return;
@@ -112,25 +141,36 @@ export function LanguageTabs() {
     fetchInitialData();
   }, [fetchInitialData]);
 
-  const availableLanguages = ISO_639_1_LANGUAGES.filter(
-    (l) => !configuredLanguages.includes(l.code),
+  const availableLanguages = useMemo(
+    () => ISO_639_1_LANGUAGES.filter((l) => !configuredLanguages.includes(l.code)),
+    [configuredLanguages],
   );
 
   const query = search.toLowerCase().trim();
-  const filteredLanguages = query
-    ? availableLanguages.filter(
-        (l) =>
-          l.name.toLowerCase().includes(query) ||
-          l.code.toLowerCase().includes(query),
-      )
-    : availableLanguages;
+  const filteredLanguages = useMemo(
+    () =>
+      query
+        ? availableLanguages.filter(
+            (l) =>
+              l.name.toLowerCase().includes(query) ||
+              l.code.toLowerCase().includes(query),
+          )
+        : availableLanguages,
+    [availableLanguages, query],
+  );
 
-  function handleSelectLanguage(code: string) {
-    addLanguage(code);
-    setActiveTab(code);
+  function handleConfirmAdd() {
+    if (!selectedCode) return;
+    addLanguage(selectedCode);
+    setActiveTab(selectedCode);
     setAddDialogOpen(false);
     setSearch("");
+    setSelectedCode(null);
   }
+
+  const handleRowSelect = useCallback((code: string) => {
+    setSelectedCode(code);
+  }, []);
 
   const progressPercent =
     probeProgress && probeProgress.total > 0
@@ -169,16 +209,16 @@ export function LanguageTabs() {
             <TabsTrigger value="default">Default</TabsTrigger>
             {configuredLanguages.map((code) => (
               <TabsTrigger key={code} value={code}>
+                {getCountryCode(code) && (
+                  <span className={`fi fi-${getCountryCode(code)!.toLowerCase()} mr-1.5`} />
+                )}
                 {getLanguageName(code)}
-                <Badge variant="secondary" className="ml-1.5 text-[10px] px-1 py-0">
-                  {code}
-                </Badge>
               </TabsTrigger>
             ))}
           </TabsList>
         </div>
 
-        <Dialog open={addDialogOpen} onOpenChange={(open) => { setAddDialogOpen(open); if (!open) setSearch(""); }}>
+        <Dialog open={addDialogOpen} onOpenChange={(open) => { setAddDialogOpen(open); if (!open) { setSearch(""); setSelectedCode(null); } }}>
           <DialogTrigger asChild>
             <Button variant="outline" size="sm" disabled={isProbing} className="shrink-0">
               {isProbing ? (
@@ -213,18 +253,21 @@ export function LanguageTabs() {
                 </p>
               ) : (
                 filteredLanguages.map((lang) => (
-                  <button
+                  <LanguageRow
                     key={lang.code}
-                    type="button"
-                    onClick={() => handleSelectLanguage(lang.code)}
-                    className="hover:bg-accent w-full cursor-pointer px-3 py-2 text-left text-sm transition-colors"
-                  >
-                    {lang.name}{" "}
-                    <span className="text-muted-foreground">({lang.code})</span>
-                  </button>
+                    lang={lang}
+                    selected={selectedCode === lang.code}
+                    onSelect={handleRowSelect}
+                  />
                 ))
               )}
             </div>
+            <DialogFooter>
+              <Button onClick={handleConfirmAdd} disabled={!selectedCode}>
+                <Plus className="size-4" />
+                Add
+              </Button>
+            </DialogFooter>
           </DialogContent>
         </Dialog>
       </div>

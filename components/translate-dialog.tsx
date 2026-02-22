@@ -21,7 +21,7 @@ import { Button } from "@/components/ui/button";
 import { Separator } from "@/components/ui/separator";
 import { Label } from "@/components/ui/label";
 import { Languages, Loader2 } from "lucide-react";
-import { ISO_639_1_LANGUAGES, getLanguageName } from "@/lib/languages";
+import { ISO_639_1_LANGUAGES, getLanguageName, getCountryCode } from "@/lib/languages";
 import type { BotMetadata } from "@/lib/types";
 import { toast } from "sonner";
 
@@ -44,10 +44,11 @@ export function TranslateDialog({
   if (!openaiKey) return null;
 
   const sourceOptions = [
-    { value: "default", label: "Default" },
+    { value: "default", label: "Default", country: null as string | null },
     ...configuredLanguages.map((code) => ({
       value: code,
-      label: `${getLanguageName(code)} (${code})`,
+      label: getLanguageName(code),
+      country: getCountryCode(code),
     })),
   ];
 
@@ -118,7 +119,10 @@ export function TranslateDialog({
           <DialogTitle>AI Translation</DialogTitle>
           <DialogDescription>
             Translate metadata from a source language to{" "}
-            {getLanguageName(currentLang)} ({currentLang}).
+            {getCountryCode(currentLang) && (
+              <span className={`fi fi-${getCountryCode(currentLang)!.toLowerCase()} mx-1`} />
+            )}
+            {getLanguageName(currentLang)}.
           </DialogDescription>
         </DialogHeader>
 
@@ -132,6 +136,9 @@ export function TranslateDialog({
               <SelectContent>
                 {sourceOptions.map((opt) => (
                   <SelectItem key={opt.value} value={opt.value}>
+                    {opt.country && (
+                      <span className={`fi fi-${opt.country.toLowerCase()} mr-1.5`} />
+                    )}
                     {opt.label}
                   </SelectItem>
                 ))}

@@ -19,7 +19,7 @@ import {
 } from "@/components/ui/dialog";
 import { CommandsEditor } from "./commands-editor";
 import { TranslateDialog } from "./translate-dialog";
-import { getLanguageName } from "@/lib/languages";
+import { getLanguageName, getCountryCode } from "@/lib/languages";
 import type { BotMetadata, BotCommand } from "@/lib/types";
 import { toast } from "sonner";
 
@@ -190,15 +190,22 @@ export function MetadataEditor({ languageCode }: MetadataEditorProps) {
     );
   }
 
-  const label = isDefault
-    ? "Default"
-    : `${getLanguageName(languageCode)} (${languageCode})`;
+  const countryCode = !isDefault ? getCountryCode(languageCode) : null;
 
   return (
     <Card>
       <CardHeader>
         <div className="flex items-center justify-between">
-          <CardTitle className="text-base">{label}</CardTitle>
+          <CardTitle className="text-base">
+            {isDefault ? (
+              "Default"
+            ) : (
+              <span className="flex items-center gap-1.5">
+                {countryCode && <span className={`fi fi-${countryCode.toLowerCase()}`} />}
+                {getLanguageName(languageCode)}
+              </span>
+            )}
+          </CardTitle>
           <div className="flex items-center gap-2">
             {!isDefault && languageCode && (
               <TranslateDialog
@@ -286,7 +293,7 @@ export function MetadataEditor({ languageCode }: MetadataEditorProps) {
                     <DialogTitle>Delete Localization</DialogTitle>
                     <DialogDescription>
                       This will remove all localized metadata for{" "}
-                      {getLanguageName(languageCode)} ({languageCode}). This
+                      {getLanguageName(languageCode)}. This
                       action cannot be undone.
                     </DialogDescription>
                   </DialogHeader>
