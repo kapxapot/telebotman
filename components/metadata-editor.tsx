@@ -2,7 +2,7 @@
 
 import { useCallback, useEffect, useState } from "react";
 import { useApp } from "./app-provider";
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import { Card, CardContent } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
 import { Button } from "@/components/ui/button";
@@ -19,7 +19,7 @@ import {
 } from "@/components/ui/dialog";
 import { CommandsEditor } from "./commands-editor";
 import { TranslateDialog } from "./translate-dialog";
-import { getLanguageName, getCountryCode } from "@/lib/languages";
+import { getLanguageName } from "@/lib/languages";
 import { LanguageFlag } from "./language-flag";
 import type { BotMetadata, BotCommand } from "@/lib/types";
 import { toast } from "sonner";
@@ -191,33 +191,17 @@ export function MetadataEditor({ languageCode }: MetadataEditorProps) {
     );
   }
 
-  const countryCode = !isDefault ? getCountryCode(languageCode) : null;
-
   return (
-    <Card>
-      <CardHeader>
-        <div className="flex items-center justify-between">
-          <CardTitle className="text-base">
-            {isDefault ? (
-              "Default"
-            ) : (
-              <span className="flex items-center gap-1.5">
-                {countryCode && <span className={`fi fi-${countryCode.toLowerCase()}`} />}
-                {getLanguageName(languageCode)}
-              </span>
-            )}
-          </CardTitle>
-          <div className="flex items-center gap-2">
-            {!isDefault && languageCode && (
-              <TranslateDialog
-                currentLang={languageCode}
-                onApply={handleTranslationApply}
-              />
-            )}
-          </div>
-        </div>
-      </CardHeader>
+    <Card className="pt-3">
       <CardContent className="space-y-4">
+        {!isDefault && languageCode && (
+          <div className="flex justify-end">
+            <TranslateDialog
+              currentLang={languageCode}
+              onApply={handleTranslationApply}
+            />
+          </div>
+        )}
         <div className="space-y-2">
           <div className="flex items-center justify-between">
             <Label htmlFor={`name-${languageCode}`}>Name</Label>

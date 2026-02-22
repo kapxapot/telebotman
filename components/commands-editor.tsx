@@ -36,16 +36,8 @@ export function CommandsEditor({
   }
 
   return (
-    <div className="space-y-3">
-      <div className="flex items-center justify-between">
-        <h4 className="text-sm font-medium">Commands</h4>
-        {!readOnlyCommands && (
-          <Button type="button" variant="outline" size="sm" onClick={addCommand}>
-            <Plus className="size-3" />
-            Add Command
-          </Button>
-        )}
-      </div>
+    <div className="space-y-2">
+      <h4 className="text-sm font-medium">Commands</h4>
 
       {commands.length === 0 && (
         <p className="text-muted-foreground text-sm">No commands configured.</p>
@@ -81,6 +73,15 @@ export function CommandsEditor({
           </div>
         ))}
       </div>
+
+      {!readOnlyCommands && (
+        <div className="flex justify-end">
+          <Button type="button" variant="outline" size="sm" onClick={addCommand}>
+            <Plus className="size-3" />
+            Add Command
+          </Button>
+        </div>
+      )}
     </div>
   );
 }
