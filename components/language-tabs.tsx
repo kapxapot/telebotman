@@ -248,7 +248,8 @@ export function LanguageTabs() {
               ) : (
                 <Plus className="size-3" />
               )}
-              Add Language
+              <span className="hidden sm:inline">Add Language</span>
+              <span className="sm:hidden">Add</span>
             </Button>
           </DialogTrigger>
           <DialogContent>

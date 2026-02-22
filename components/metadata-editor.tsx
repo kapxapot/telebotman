@@ -328,7 +328,7 @@ export function MetadataEditor({ languageCode }: MetadataEditorProps) {
             <div className="flex w-full items-center gap-2 rounded-md bg-muted p-2.5 py-2">
               <Info className="size-5 shrink-0 text-blue-500" />
               <span>
-                Empty settings fall back to the default metadata values.
+                Empty localized settings fall back to the default metadata values.
               </span>
             </div>
           </div>
