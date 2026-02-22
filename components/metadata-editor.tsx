@@ -182,7 +182,7 @@ export function MetadataEditor({ languageCode }: MetadataEditorProps) {
     return (
       <Card>
         <CardContent className="flex items-center justify-center py-12">
-          <Loader2 className="text-muted-foreground h-6 w-6 animate-spin" />
+          <Loader2 className="text-muted-foreground size-6 animate-spin" />
           <span className="text-muted-foreground ml-2">
             Loading metadata...
           </span>
@@ -282,7 +282,7 @@ export function MetadataEditor({ languageCode }: MetadataEditorProps) {
               >
                 <DialogTrigger asChild>
                   <Button type="button" variant="destructive" size="sm">
-                    <Trash2 className="mr-2 h-4 w-4" />
+                    <Trash2 className="size-4" />
                     Delete Localization
                   </Button>
                 </DialogTrigger>
@@ -308,7 +308,7 @@ export function MetadataEditor({ languageCode }: MetadataEditorProps) {
                       disabled={deleting}
                     >
                       {deleting && (
-                        <Loader2 className="mr-2 h-4 w-4 animate-spin" />
+                        <Loader2 className="size-4 animate-spin" />
                       )}
                       Delete
                     </Button>
@@ -319,9 +319,9 @@ export function MetadataEditor({ languageCode }: MetadataEditorProps) {
           </div>
           <Button onClick={handleSave} disabled={loading}>
             {loading ? (
-              <Loader2 className="mr-2 h-4 w-4 animate-spin" />
+              <Loader2 className="size-4 animate-spin" />
             ) : (
-              <Save className="mr-2 h-4 w-4" />
+              <Save className="size-4" />
             )}
             Save
           </Button>

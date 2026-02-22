@@ -109,7 +109,7 @@ export function TranslateDialog({
     <Dialog open={open} onOpenChange={setOpen}>
       <DialogTrigger asChild>
         <Button type="button" variant="outline" size="sm">
-          <Languages className="mr-2 h-4 w-4" />
+          <Languages className="size-4" />
           Translate
         </Button>
       </DialogTrigger>
@@ -144,7 +144,7 @@ export function TranslateDialog({
             disabled={loading}
             className="w-full"
           >
-            {loading && <Loader2 className="mr-2 h-4 w-4 animate-spin" />}
+            {loading && <Loader2 className="size-4 animate-spin" />}
             Translate
           </Button>
 

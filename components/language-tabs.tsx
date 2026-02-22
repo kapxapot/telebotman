@@ -182,9 +182,9 @@ export function LanguageTabs() {
           <DialogTrigger asChild>
             <Button variant="outline" size="sm" disabled={isProbing} className="shrink-0">
               {isProbing ? (
-                <Loader2 className="mr-1 h-3 w-3 animate-spin" />
+                <Loader2 className="size-3 animate-spin" />
               ) : (
-                <Plus className="mr-1 h-3 w-3" />
+                <Plus className="size-3" />
               )}
               Add Language
             </Button>
@@ -197,7 +197,7 @@ export function LanguageTabs() {
               </DialogDescription>
             </DialogHeader>
             <div className="relative">
-              <Search className="text-muted-foreground absolute top-2.5 left-3 h-4 w-4" />
+              <Search className="text-muted-foreground absolute top-2.5 left-3 size-4" />
               <Input
                 placeholder="Search languages..."
                 value={search}

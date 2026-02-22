@@ -93,9 +93,9 @@ export function TokenForm() {
                   tabIndex={-1}
                 >
                   {showToken ? (
-                    <EyeOff className="h-4 w-4" />
+                    <EyeOff className="size-4" />
                   ) : (
-                    <Eye className="h-4 w-4" />
+                    <Eye className="size-4" />
                   )}
                 </button>
               </div>
@@ -129,9 +129,9 @@ export function TokenForm() {
                   tabIndex={-1}
                 >
                   {showOpenaiKey ? (
-                    <EyeOff className="h-4 w-4" />
+                    <EyeOff className="size-4" />
                   ) : (
-                    <Eye className="h-4 w-4" />
+                    <Eye className="size-4" />
                   )}
                 </button>
               </div>
@@ -151,7 +151,7 @@ export function TokenForm() {
             )}
 
             <Button type="submit" className="w-full" disabled={loading}>
-              {loading && <Loader2 className="mr-2 h-4 w-4 animate-spin" />}
+              {loading && <Loader2 className="size-4 animate-spin" />}
               Connect
             </Button>
           </form>

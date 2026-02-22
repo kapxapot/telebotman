@@ -41,7 +41,7 @@ export function CommandsEditor({
         <h4 className="text-sm font-medium">Commands</h4>
         {!readOnlyCommands && (
           <Button type="button" variant="outline" size="sm" onClick={addCommand}>
-            <Plus className="mr-1 h-3 w-3" />
+            <Plus className="size-3" />
             Add Command
           </Button>
         )}
@@ -75,7 +75,7 @@ export function CommandsEditor({
                 onClick={() => removeCommand(i)}
                 className="shrink-0"
               >
-                <Trash2 className="h-4 w-4" />
+                <Trash2 className="size-4" />
               </Button>
             )}
           </div>
