@@ -307,11 +307,11 @@ export function LanguageTabs() {
       </div>
 
       <div className="mt-2">
-        <TabsContent value="default">
+        <TabsContent value="default" forceMount className={activeTab !== "default" ? "hidden" : ""}>
           <MetadataEditor languageCode={null} />
         </TabsContent>
         {configuredLanguages.map((code) => (
-          <TabsContent key={code} value={code}>
+          <TabsContent key={code} value={code} forceMount className={activeTab !== code ? "hidden" : ""}>
             <MetadataEditor languageCode={code} />
           </TabsContent>
         ))}

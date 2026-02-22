@@ -219,10 +219,26 @@ export function MetadataEditor({ languageCode }: MetadataEditorProps) {
     <Card>
       <CardContent className="space-y-4">
         {!isDefault && languageCode && (
-          <TranslateDialog
-            currentLang={languageCode}
-            onApply={handleTranslationApply}
-          />
+          <div className="flex justify-end gap-2">
+            {defaultMetadata && (
+              <Button
+                type="button"
+                variant="outline"
+                size="sm"
+                onClick={() => {
+                  populateForm(defaultMetadata);
+                  toast.success("All fields copied from default");
+                }}
+              >
+                <ClipboardPaste className="size-4" />
+                Copy All from Default
+              </Button>
+            )}
+            <TranslateDialog
+              currentLang={languageCode}
+              onApply={handleTranslationApply}
+            />
+          </div>
         )}
         <div className="space-y-2">
           <div className="flex items-center justify-between">
