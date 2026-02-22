@@ -7,7 +7,7 @@ import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
 import { Button } from "@/components/ui/button";
 import { Label } from "@/components/ui/label";
-import { Info, Loader2, Save, Trash2, Copy } from "lucide-react";
+import { Info, Loader2, Save, Trash2, ClipboardPaste } from "lucide-react";
 import {
   Tooltip,
   TooltipContent,
@@ -40,7 +40,7 @@ function SyncFromDefaultButton({ onClick }: { onClick: () => void }) {
           className="size-6"
           onClick={onClick}
         >
-          <Copy className="size-3" />
+          <ClipboardPaste className="size-3.5" />
         </Button>
       </TooltipTrigger>
       <TooltipContent>Copy from default</TooltipContent>

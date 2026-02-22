@@ -3,7 +3,7 @@
 import { useEffect, useRef } from "react";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
-import { Plus, Trash2, Copy } from "lucide-react";
+import { Plus, Trash2, ClipboardPaste } from "lucide-react";
 import {
   Tooltip,
   TooltipContent,
@@ -68,7 +68,7 @@ export function CommandsEditor({
                 className="size-6"
                 onClick={onSyncFromDefault}
               >
-                <Copy className="size-3" />
+                <ClipboardPaste className="size-3.5" />
               </Button>
             </TooltipTrigger>
             <TooltipContent>Add missing commands from default</TooltipContent>
