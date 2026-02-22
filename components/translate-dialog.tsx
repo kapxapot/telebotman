@@ -107,95 +107,97 @@ export function TranslateDialog({
   }
 
   return (
-    <Dialog open={open} onOpenChange={setOpen}>
-      <DialogTrigger asChild>
-        <Button type="button" variant="outline" size="sm">
-          <Languages className="size-4" />
-          Translate
-        </Button>
-      </DialogTrigger>
-      <DialogContent className="max-w-lg">
-        <DialogHeader>
-          <DialogTitle>AI Translation</DialogTitle>
-          <DialogDescription>
-            Translate metadata from a source language to{" "}
-            {getCountryCode(currentLang) && (
-              <span className={`fi fi-${getCountryCode(currentLang)!.toLowerCase()} mx-1`} />
-            )}
-            {getLanguageName(currentLang)}.
-          </DialogDescription>
-        </DialogHeader>
-
-        <div className="space-y-4">
-          <div className="space-y-2">
-            <Label>Source Language</Label>
-            <Select value={sourceLang} onValueChange={setSourceLang}>
-              <SelectTrigger>
-                <SelectValue />
-              </SelectTrigger>
-              <SelectContent>
-                {sourceOptions.map((opt) => (
-                  <SelectItem key={opt.value} value={opt.value}>
-                    {opt.country && (
-                      <span className={`fi fi-${opt.country.toLowerCase()} mr-1.5`} />
-                    )}
-                    {opt.label}
-                  </SelectItem>
-                ))}
-              </SelectContent>
-            </Select>
-          </div>
-
-          <Button
-            onClick={handleTranslate}
-            disabled={loading}
-            className="w-full"
-          >
-            {loading && <Loader2 className="size-4 animate-spin" />}
+    <div className="flex justify-end">
+      <Dialog open={open} onOpenChange={setOpen}>
+        <DialogTrigger asChild>
+          <Button type="button" variant="outline" size="sm">
+            <Languages className="size-4" />
             Translate
           </Button>
+        </DialogTrigger>
+        <DialogContent className="max-w-lg">
+          <DialogHeader>
+            <DialogTitle>AI Translation</DialogTitle>
+            <DialogDescription>
+              Translate metadata from a source language to{" "}
+              {getCountryCode(currentLang) && (
+                <span className={`fi fi-${getCountryCode(currentLang)!.toLowerCase()} mx-1`} />
+              )}
+              {getLanguageName(currentLang)}.
+            </DialogDescription>
+          </DialogHeader>
 
-          {preview && (
-            <>
-              <Separator />
-              <div className="space-y-2">
-                <h4 className="text-sm font-medium">Preview</h4>
-                <div className="bg-muted space-y-2 rounded-md p-3 text-sm">
-                  <div>
-                    <span className="text-muted-foreground">Name:</span>{" "}
-                    {preview.name}
-                  </div>
-                  <div>
-                    <span className="text-muted-foreground">
-                      Short Description:
-                    </span>{" "}
-                    {preview.short_description}
-                  </div>
-                  <div>
-                    <span className="text-muted-foreground">Description:</span>{" "}
-                    {preview.description}
-                  </div>
-                  {preview.commands.length > 0 && (
+          <div className="space-y-4">
+            <div className="space-y-2">
+              <Label>Source Language</Label>
+              <Select value={sourceLang} onValueChange={setSourceLang}>
+                <SelectTrigger>
+                  <SelectValue />
+                </SelectTrigger>
+                <SelectContent>
+                  {sourceOptions.map((opt) => (
+                    <SelectItem key={opt.value} value={opt.value}>
+                      {opt.country && (
+                        <span className={`fi fi-${opt.country.toLowerCase()} mr-1.5`} />
+                      )}
+                      {opt.label}
+                    </SelectItem>
+                  ))}
+                </SelectContent>
+              </Select>
+            </div>
+
+            <Button
+              onClick={handleTranslate}
+              disabled={loading}
+              className="w-full"
+            >
+              {loading && <Loader2 className="size-4 animate-spin" />}
+              Translate
+            </Button>
+
+            {preview && (
+              <>
+                <Separator />
+                <div className="space-y-2">
+                  <h4 className="text-sm font-medium">Preview</h4>
+                  <div className="bg-muted space-y-2 rounded-md p-3 text-sm">
                     <div>
-                      <span className="text-muted-foreground">Commands:</span>
-                      <ul className="ml-4 mt-1 list-disc">
-                        {preview.commands.map((c, i) => (
-                          <li key={i}>
-                            <code>/{c.command}</code> &mdash; {c.description}
-                          </li>
-                        ))}
-                      </ul>
+                      <span className="text-muted-foreground">Name:</span>{" "}
+                      {preview.name}
                     </div>
-                  )}
+                    <div>
+                      <span className="text-muted-foreground">
+                        Short Description:
+                      </span>{" "}
+                      {preview.short_description}
+                    </div>
+                    <div>
+                      <span className="text-muted-foreground">Description:</span>{" "}
+                      {preview.description}
+                    </div>
+                    {preview.commands.length > 0 && (
+                      <div>
+                        <span className="text-muted-foreground">Commands:</span>
+                        <ul className="ml-4 mt-1 list-disc">
+                          {preview.commands.map((c, i) => (
+                            <li key={i}>
+                              <code>/{c.command}</code> &mdash; {c.description}
+                            </li>
+                          ))}
+                        </ul>
+                      </div>
+                    )}
+                  </div>
+                  <Button onClick={handleApply} className="w-full">
+                    Apply Translation
+                  </Button>
                 </div>
-                <Button onClick={handleApply} className="w-full">
-                  Apply Translation
-                </Button>
-              </div>
-            </>
-          )}
-        </div>
-      </DialogContent>
-    </Dialog>
+              </>
+            )}
+          </div>
+        </DialogContent>
+      </Dialog>
+    </div>
   );
 }

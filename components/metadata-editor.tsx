@@ -219,12 +219,10 @@ export function MetadataEditor({ languageCode }: MetadataEditorProps) {
     <Card>
       <CardContent className="space-y-4">
         {!isDefault && languageCode && (
-          <div className="flex justify-end">
-            <TranslateDialog
-              currentLang={languageCode}
-              onApply={handleTranslationApply}
-            />
-          </div>
+          <TranslateDialog
+            currentLang={languageCode}
+            onApply={handleTranslationApply}
+          />
         )}
         <div className="space-y-2">
           <div className="flex items-center justify-between">
@@ -310,11 +308,13 @@ export function MetadataEditor({ languageCode }: MetadataEditorProps) {
         />
 
         {!isDefault && (
-          <div className="flex items-center gap-2 text-sm pt-4">
-            <Info className="size-5 shrink-0 text-blue-500" />
-            <span>
-              Empty settings fall back to the default metadata values.
-            </span>
+          <div className="flex items-center gap-2 text-sm pt-2">
+            <div className="flex w-full items-center gap-2 rounded-md bg-muted p-2.5 py-2">
+              <Info className="size-5 shrink-0 text-blue-500" />
+              <span>
+                Empty settings fall back to the default metadata values.
+              </span>
+            </div>
           </div>
         )}
 
