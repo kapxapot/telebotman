@@ -7,7 +7,7 @@ import {
 } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
-import { LogOut } from "lucide-react";
+import { ExternalLink, LogOut } from "lucide-react";
 
 export function BotInfoCard() {
   const { botInfo, disconnect } = useApp();
@@ -25,7 +25,17 @@ export function BotInfoCard() {
                 Connected
               </Badge>
             </div>
-            <p className="text-muted-foreground text-sm">@{botInfo.username}</p>
+            <span className="inline-flex items-center gap-1">
+              <a
+                href={`https://t.me/${botInfo.username}`}
+                target="_blank"
+                rel="noopener noreferrer"
+                className="text-sm text-blue-600 underline-offset-2 hover:underline hover:text-blue-800 dark:text-blue-400 dark:hover:text-blue-300"
+              >
+                @{botInfo.username}
+              </a>
+              <ExternalLink className="size-4 text-muted-foreground" />
+            </span>
           </div>
         </div>
         <Button variant="outline" size="sm" onClick={disconnect}>
