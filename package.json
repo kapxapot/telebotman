@@ -12,6 +12,7 @@
   "dependencies": {
     "@ai-sdk/openai": "^3.0.29",
     "@hookform/resolvers": "^5.2.2",
+    "@vercel/analytics": "^1.6.1",
     "ai": "^6.0.91",
     "class-variance-authority": "^0.7.1",
     "clsx": "^2.1.1",

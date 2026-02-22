@@ -7,7 +7,12 @@ import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
 import { Button } from "@/components/ui/button";
 import { Label } from "@/components/ui/label";
-import { Info, Loader2, Save, Trash2 } from "lucide-react";
+import { Info, Loader2, Save, Trash2, Copy } from "lucide-react";
+import {
+  Tooltip,
+  TooltipContent,
+  TooltipTrigger,
+} from "@/components/ui/tooltip";
 import {
   Dialog,
   DialogContent,
@@ -23,6 +28,25 @@ import { getLanguageName } from "@/lib/languages";
 import { LanguageFlag } from "./language-flag";
 import type { BotMetadata, BotCommand } from "@/lib/types";
 import { toast } from "sonner";
+
+function SyncFromDefaultButton({ onClick }: { onClick: () => void }) {
+  return (
+    <Tooltip>
+      <TooltipTrigger asChild>
+        <Button
+          type="button"
+          variant="ghost"
+          size="icon"
+          className="size-6"
+          onClick={onClick}
+        >
+          <Copy className="size-3" />
+        </Button>
+      </TooltipTrigger>
+      <TooltipContent>Copy from default</TooltipContent>
+    </Tooltip>
+  );
+}
 
 interface MetadataEditorProps {
   languageCode: string | null;
@@ -192,7 +216,7 @@ export function MetadataEditor({ languageCode }: MetadataEditorProps) {
   }
 
   return (
-    <Card className="pt-3">
+    <Card>
       <CardContent className="space-y-4">
         {!isDefault && languageCode && (
           <div className="flex justify-end">
@@ -204,7 +228,12 @@ export function MetadataEditor({ languageCode }: MetadataEditorProps) {
         )}
         <div className="space-y-2">
           <div className="flex items-center justify-between">
-            <Label htmlFor={`name-${languageCode}`}>Name</Label>
+            <div className="flex items-center gap-1">
+              <Label htmlFor={`name-${languageCode}`}>Name</Label>
+              {!isDefault && defaultMetadata && (
+                <SyncFromDefaultButton onClick={() => setName(defaultMetadata.name)} />
+              )}
+            </div>
             <span className="text-muted-foreground text-xs">
               {name.length}/64
             </span>
@@ -220,9 +249,14 @@ export function MetadataEditor({ languageCode }: MetadataEditorProps) {
 
         <div className="space-y-2">
           <div className="flex items-center justify-between">
-            <Label htmlFor={`short-desc-${languageCode}`}>
-              Short Description
-            </Label>
+            <div className="flex items-center gap-1">
+              <Label htmlFor={`short-desc-${languageCode}`}>
+                Short Description
+              </Label>
+              {!isDefault && defaultMetadata && (
+                <SyncFromDefaultButton onClick={() => setShortDescription(defaultMetadata.short_description)} />
+              )}
+            </div>
             <span className="text-muted-foreground text-xs">
               {shortDescription.length}/120
             </span>
@@ -239,7 +273,12 @@ export function MetadataEditor({ languageCode }: MetadataEditorProps) {
 
         <div className="space-y-2">
           <div className="flex items-center justify-between">
-            <Label htmlFor={`desc-${languageCode}`}>Description</Label>
+            <div className="flex items-center gap-1">
+              <Label htmlFor={`desc-${languageCode}`}>Description</Label>
+              {!isDefault && defaultMetadata && (
+                <SyncFromDefaultButton onClick={() => setDescription(defaultMetadata.description)} />
+              )}
+            </div>
             <span className="text-muted-foreground text-xs">
               {description.length}/512
             </span>
@@ -257,6 +296,17 @@ export function MetadataEditor({ languageCode }: MetadataEditorProps) {
         <CommandsEditor
           commands={commands}
           onChange={setCommands}
+          onSyncFromDefault={!isDefault && defaultMetadata ? () => {
+            const defaultCmds = defaultMetadata.commands;
+            const existingNames = new Set(commands.map((c) => c.command));
+            const missing = defaultCmds.filter((c) => !existingNames.has(c.command));
+            if (missing.length === 0) {
+              toast.info("All default commands already present");
+              return;
+            }
+            setCommands([...commands, ...missing.map((c) => ({ ...c }))]);
+            toast.success(`Added ${missing.length} missing command${missing.length > 1 ? "s" : ""}`);
+          } : undefined}
         />
 
         {!isDefault && (

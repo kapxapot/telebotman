@@ -3,19 +3,26 @@
 import { useEffect, useRef } from "react";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
-import { Plus, Trash2 } from "lucide-react";
+import { Plus, Trash2, Copy } from "lucide-react";
+import {
+  Tooltip,
+  TooltipContent,
+  TooltipTrigger,
+} from "@/components/ui/tooltip";
 import type { BotCommand } from "@/lib/types";
 
 interface CommandsEditorProps {
   commands: BotCommand[];
   onChange: (commands: BotCommand[]) => void;
   readOnlyCommands?: boolean;
+  onSyncFromDefault?: () => void;
 }
 
 export function CommandsEditor({
   commands,
   onChange,
   readOnlyCommands = false,
+  onSyncFromDefault,
 }: CommandsEditorProps) {
   const pendingFocusRef = useRef(false);
   const lastCommandInputRef = useRef<HTMLInputElement>(null);
@@ -49,7 +56,25 @@ export function CommandsEditor({
 
   return (
     <div className="space-y-2">
-      <h4 className="text-sm font-medium">Commands</h4>
+      <div className="flex items-center gap-1">
+        <h4 className="text-sm font-medium">Commands</h4>
+        {onSyncFromDefault && (
+          <Tooltip>
+            <TooltipTrigger asChild>
+              <Button
+                type="button"
+                variant="ghost"
+                size="icon"
+                className="size-6"
+                onClick={onSyncFromDefault}
+              >
+                <Copy className="size-3" />
+              </Button>
+            </TooltipTrigger>
+            <TooltipContent>Add missing commands from default</TooltipContent>
+          </Tooltip>
+        )}
+      </div>
 
       {commands.length === 0 && (
         <p className="text-muted-foreground text-sm">No commands configured.</p>

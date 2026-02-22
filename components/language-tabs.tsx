@@ -15,6 +15,8 @@ import {
   DialogTrigger,
 } from "@/components/ui/dialog";
 import { Plus, Loader2, Search } from "lucide-react";
+import { Checkbox } from "@/components/ui/checkbox";
+import { Label } from "@/components/ui/label";
 import { MetadataEditor } from "./metadata-editor";
 import { LanguageFlag } from "./language-flag";
 import { ISO_639_1_LANGUAGES, getLanguageName } from "@/lib/languages";
@@ -50,6 +52,8 @@ export function LanguageTabs() {
     configuredLanguages,
     setConfiguredLanguages,
     setDefaultMetadata,
+    setLanguageMetadata,
+    defaultMetadata,
     setIsProbing,
     setProbeProgress,
     addLanguage,
@@ -62,6 +66,7 @@ export function LanguageTabs() {
   const [addDialogOpen, setAddDialogOpen] = useState(false);
   const [search, setSearch] = useState("");
   const [selectedCode, setSelectedCode] = useState<string | null>(null);
+  const [prefillFromDefault, setPrefillFromDefault] = useState(false);
 
   const fetchInitialData = useCallback(async () => {
     if (!botToken) return;
@@ -172,10 +177,19 @@ export function LanguageTabs() {
   function handleConfirmAdd() {
     if (!selectedCode) return;
     addLanguage(selectedCode);
+    if (prefillFromDefault && defaultMetadata) {
+      setLanguageMetadata(selectedCode, {
+        name: defaultMetadata.name,
+        description: defaultMetadata.description,
+        short_description: defaultMetadata.short_description,
+        commands: defaultMetadata.commands.map((c) => ({ ...c })),
+      });
+    }
     setActiveTab(selectedCode);
     setAddDialogOpen(false);
     setSearch("");
     setSelectedCode(null);
+    setPrefillFromDefault(false);
   }
 
   const handleRowSelect = useCallback((code: string) => {
@@ -226,7 +240,7 @@ export function LanguageTabs() {
           </TabsList>
         </div>
 
-        <Dialog open={addDialogOpen} onOpenChange={(open) => { setAddDialogOpen(open); if (!open) { setSearch(""); setSelectedCode(null); } }}>
+        <Dialog open={addDialogOpen} onOpenChange={(open) => { setAddDialogOpen(open); if (!open) { setSearch(""); setSelectedCode(null); setPrefillFromDefault(false); } }}>
           <DialogTrigger asChild>
             <Button variant="outline" size="sm" disabled={isProbing} className="shrink-0">
               {isProbing ? (
@@ -270,6 +284,18 @@ export function LanguageTabs() {
                 ))
               )}
             </div>
+            {defaultMetadata && (
+              <div className="flex items-center gap-2">
+                <Checkbox
+                  id="prefill-default"
+                  checked={prefillFromDefault}
+                  onCheckedChange={(v) => setPrefillFromDefault(v === true)}
+                />
+                <Label htmlFor="prefill-default" className="text-sm font-normal cursor-pointer">
+                  Prefill with default metadata
+                </Label>
+              </div>
+            )}
             <DialogFooter>
               <Button onClick={handleConfirmAdd} disabled={!selectedCode}>
                 <Plus className="size-4" />

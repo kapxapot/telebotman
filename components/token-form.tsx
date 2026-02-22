@@ -13,6 +13,7 @@ import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import { Label } from "@/components/ui/label";
 import { Loader2, Eye, EyeOff } from "lucide-react";
+import Image from "next/image";
 
 interface FieldErrors {
   bot_token?: string;
@@ -67,6 +68,14 @@ export function TokenForm() {
     <div className="flex min-h-screen items-center justify-center p-4">
       <Card className="w-full max-w-md">
         <CardHeader className="text-center">
+          <Image
+            src="/logo.png"
+            alt="Telegram Bot Manager"
+            width={180}
+            height={180}
+            className="mx-auto"
+            priority
+          />
           <CardTitle className="text-2xl">Telegram Bot Manager</CardTitle>
           <CardDescription>
             Connect your Telegram bot to manage and localize its metadata.
@@ -153,10 +162,12 @@ export function TokenForm() {
               <p className="text-destructive text-sm">{error}</p>
             )}
 
-            <Button type="submit" className="w-full" disabled={loading}>
-              {loading && <Loader2 className="size-4 animate-spin" />}
-              Connect
-            </Button>
+            <div className="pt-2">
+              <Button type="submit" className="w-full" disabled={loading}>
+                {loading && <Loader2 className="size-4 animate-spin" />}
+                Connect
+              </Button>
+            </div>
           </form>
         </CardContent>
       </Card>
