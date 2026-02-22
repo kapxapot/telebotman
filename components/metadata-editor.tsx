@@ -7,7 +7,7 @@ import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
 import { Button } from "@/components/ui/button";
 import { Label } from "@/components/ui/label";
-import { Loader2, Save, Trash2 } from "lucide-react";
+import { Info, Loader2, Save, Trash2 } from "lucide-react";
 import {
   Dialog,
   DialogContent,
@@ -259,6 +259,15 @@ export function MetadataEditor({ languageCode }: MetadataEditorProps) {
           onChange={setCommands}
         />
 
+        {!isDefault && (
+          <div className="flex items-center gap-2 text-sm pt-4">
+            <Info className="size-5 shrink-0 text-blue-500" />
+            <span>
+              Empty settings fall back to the default metadata values.
+            </span>
+          </div>
+        )}
+
         <div className="pt-4 flex items-center justify-between">
           <div>
             {!isDefault && (
@@ -269,7 +278,7 @@ export function MetadataEditor({ languageCode }: MetadataEditorProps) {
                 <DialogTrigger asChild>
                   <Button type="button" variant="destructive" size="sm">
                     <Trash2 className="size-4" />
-                    Delete Localization
+                    Delete
                   </Button>
                 </DialogTrigger>
                 <DialogContent>

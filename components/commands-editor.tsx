@@ -1,5 +1,6 @@
 "use client";
 
+import { useEffect, useRef } from "react";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import { Plus, Trash2 } from "lucide-react";
@@ -16,7 +17,18 @@ export function CommandsEditor({
   onChange,
   readOnlyCommands = false,
 }: CommandsEditorProps) {
+  const pendingFocusRef = useRef(false);
+  const lastCommandInputRef = useRef<HTMLInputElement>(null);
+
+  useEffect(() => {
+    if (pendingFocusRef.current) {
+      pendingFocusRef.current = false;
+      lastCommandInputRef.current?.focus();
+    }
+  }, [commands.length]);
+
   function addCommand() {
+    pendingFocusRef.current = true;
     onChange([...commands, { command: "", description: "" }]);
   }
 
@@ -47,6 +59,7 @@ export function CommandsEditor({
         {commands.map((cmd, i) => (
           <div key={i} className="flex items-center gap-2">
             <Input
+              ref={i === commands.length - 1 ? lastCommandInputRef : undefined}
               placeholder="command"
               value={cmd.command}
               onChange={(e) => updateCommand(i, "command", e.target.value)}
@@ -75,7 +88,7 @@ export function CommandsEditor({
       </div>
 
       {!readOnlyCommands && (
-        <div className="flex justify-end">
+        <div className="flex justify-end pt-2">
           <Button type="button" variant="outline" size="sm" onClick={addCommand}>
             <Plus className="size-3" />
             Add Command
