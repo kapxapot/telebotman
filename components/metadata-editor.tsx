@@ -20,6 +20,7 @@ import {
 import { CommandsEditor } from "./commands-editor";
 import { TranslateDialog } from "./translate-dialog";
 import { getLanguageName, getCountryCode } from "@/lib/languages";
+import { LanguageFlag } from "./language-flag";
 import type { BotMetadata, BotCommand } from "@/lib/types";
 import { toast } from "sonner";
 
@@ -292,9 +293,12 @@ export function MetadataEditor({ languageCode }: MetadataEditorProps) {
                   <DialogHeader>
                     <DialogTitle>Delete Localization</DialogTitle>
                     <DialogDescription>
-                      This will remove all localized metadata for{" "}
-                      {getLanguageName(languageCode)}. This
-                      action cannot be undone.
+                      This will remove all localized metadata for
+                      <span className="inline-flex items-center ml-1.5 gap-1.5">
+                        <LanguageFlag code={languageCode ?? ""} />
+                        <strong>{getLanguageName(languageCode)}</strong>
+                      </span>
+                      . This action cannot be undone.
                     </DialogDescription>
                   </DialogHeader>
                   <DialogFooter>
