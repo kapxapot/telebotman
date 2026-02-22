@@ -306,7 +306,7 @@ export function LanguageTabs() {
         </Dialog>
       </div>
 
-      <div className="mt-4">
+      <div className="mt-2">
         <TabsContent value="default">
           <MetadataEditor languageCode={null} />
         </TabsContent>

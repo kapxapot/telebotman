@@ -16,7 +16,7 @@ export function BotInfoCard() {
 
   return (
     <Card>
-      <CardContent className="flex items-center justify-between py-4">
+      <CardContent className="flex items-center justify-between">
         <div className="flex items-center gap-3">
           <div>
             <div className="flex items-center gap-2">
