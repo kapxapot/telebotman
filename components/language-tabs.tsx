@@ -16,7 +16,8 @@ import {
 } from "@/components/ui/dialog";
 import { Plus, Loader2, Search } from "lucide-react";
 import { MetadataEditor } from "./metadata-editor";
-import { ISO_639_1_LANGUAGES, getLanguageName, getCountryCode } from "@/lib/languages";
+import { LanguageFlag } from "./language-flag";
+import { ISO_639_1_LANGUAGES, getLanguageName } from "@/lib/languages";
 import type { Language } from "@/lib/languages";
 
 const LanguageRow = memo(function LanguageRow({
@@ -28,19 +29,16 @@ const LanguageRow = memo(function LanguageRow({
   selected: boolean;
   onSelect: (code: string) => void;
 }) {
-  const country = getCountryCode(lang.code);
   return (
     <button
       type="button"
       onClick={() => onSelect(lang.code)}
-      className={`w-full cursor-pointer px-3 py-2 text-left text-sm transition-colors ${
+      className={`flex w-full cursor-pointer items-center gap-2 px-3 py-2 text-left text-sm transition-colors ${
         selected ? "bg-accent" : "hover:bg-accent/50"
       }`}
     >
-      {country && (
-        <span className={`fi fi-${country.toLowerCase()} mr-2`} />
-      )}
-      {lang.name}{" "}
+      <LanguageFlag code={lang.code} />
+      {lang.name}
       <span className="text-muted-foreground">({lang.code})</span>
     </button>
   );
@@ -209,9 +207,7 @@ export function LanguageTabs() {
             <TabsTrigger value="default">Default</TabsTrigger>
             {configuredLanguages.map((code) => (
               <TabsTrigger key={code} value={code}>
-                {getCountryCode(code) && (
-                  <span className={`fi fi-${getCountryCode(code)!.toLowerCase()} mr-1.5`} />
-                )}
+                <LanguageFlag code={code} />
                 {getLanguageName(code)}
               </TabsTrigger>
             ))}

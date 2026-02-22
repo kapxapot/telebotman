@@ -1,0 +1,18 @@
+---
+description: Always use curly braces with if/else/for/while statements
+alwaysApply: true
+---
+
+# Always Use Curly Braces
+
+Never write single-line `if`, `else`, `for`, or `while` without curly braces.
+
+```typescript
+// BAD
+if (!value) return null;
+
+// GOOD
+if (!value) {
+  return null;
+}
+```
