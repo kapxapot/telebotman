@@ -1,0 +1,8 @@
+---
+description: Never use CSS !important in any form
+alwaysApply: true
+---
+
+# No !important
+
+Never use `!important` in CSS or Tailwind classes (e.g. `!mt-8`). If a utility is being overridden by another (such as `space-y-*`), use a structural workaround like padding (`pt-*`), a wrapper div, or restructuring the layout.

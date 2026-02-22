@@ -6,7 +6,6 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
 import { Button } from "@/components/ui/button";
-import { Separator } from "@/components/ui/separator";
 import { Label } from "@/components/ui/label";
 import { Loader2, Save, Trash2 } from "lucide-react";
 import {
@@ -263,17 +262,13 @@ export function MetadataEditor({ languageCode }: MetadataEditorProps) {
           />
         </div>
 
-        <Separator />
-
         <CommandsEditor
           commands={commands}
           onChange={setCommands}
           readOnlyCommands={!isDefault}
         />
 
-        <Separator />
-
-        <div className="flex items-center justify-between">
+        <div className="pt-4 flex items-center justify-between">
           <div>
             {!isDefault && (
               <Dialog
