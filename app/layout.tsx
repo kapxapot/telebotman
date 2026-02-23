@@ -23,20 +23,46 @@ export const viewport: Viewport = {
   userScalable: false,
 };
 
+const siteTitle = "Telegram Bot Manager";
+const siteDescription =
+  "View, manage, localize, and auto-translate Telegram bot metadata.";
+const siteUrl = "https://telebottle.vercel.app";
+const ogImage = `${siteUrl}/logo-head.png`;
+
 export const metadata: Metadata = {
-  title: "Telegram Bot Manager",
-  description:
-    "View, manage, localize, and auto-translate Telegram bot metadata.",
+  title: siteTitle,
+  description: siteDescription,
   icons: {
     icon: [
       { url: "/favicon-32x32.png", sizes: "32x32", type: "image/png" },
       { url: "/favicon-16x16.png", sizes: "16x16", type: "image/png" },
     ],
-    apple: [
-      { url: "/apple-touch-icon.png", sizes: "180x180" },
-    ],
+    apple: [{ url: "/apple-touch-icon.png", sizes: "180x180" }],
   },
   manifest: "/site.webmanifest",
+  metadataBase: new URL(siteUrl),
+  openGraph: {
+    title: siteTitle,
+    description: siteDescription,
+    url: siteUrl,
+    siteName: siteTitle,
+    images: [
+      {
+        url: ogImage,
+        width: 512,
+        height: 512,
+        alt: siteTitle,
+      },
+    ],
+    locale: "en_US",
+    type: "website",
+  },
+  twitter: {
+    card: "summary",
+    title: siteTitle,
+    description: siteDescription,
+    images: [ogImage],
+  },
 };
 
 export default function RootLayout({
