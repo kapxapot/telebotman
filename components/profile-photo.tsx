@@ -162,14 +162,14 @@ export function ProfilePhoto() {
                     unoptimized
                     className="object-cover"
                   />
-                  <div className="absolute inset-0 flex items-center justify-center bg-black/50 opacity-0 transition-opacity group-hover:opacity-100">
+                  <div className="absolute inset-0 flex items-center justify-center bg-black/50 opacity-100 transition-opacity [@media(hover:hover)]:opacity-0 [@media(hover:hover)]:group-hover:opacity-100">
                     <Camera className="size-6 text-white" />
                   </div>
                 </>
               ) : (
                 <>
                   <Bot className="size-6 text-muted-foreground" />
-                  <div className="absolute inset-0 flex items-center justify-center bg-black/50 opacity-0 transition-opacity group-hover:opacity-100">
+                  <div className="absolute inset-0 flex items-center justify-center bg-black/50 opacity-100 transition-opacity [@media(hover:hover)]:opacity-0 [@media(hover:hover)]:group-hover:opacity-100">
                     <Camera className="size-6 text-white" />
                   </div>
                 </>
@@ -188,7 +188,7 @@ export function ProfilePhoto() {
                   e.stopPropagation();
                   handleRemove();
                 }}
-                className="absolute -right-0.5 -top-0.5 flex size-5 cursor-pointer items-center justify-center rounded-full border border-border bg-background text-muted-foreground opacity-0 transition-opacity hover:text-foreground group-hover:opacity-100"
+                className="absolute -right-0.5 -top-0.5 flex size-5 cursor-pointer items-center justify-center rounded-full border border-border bg-background text-muted-foreground opacity-100 transition-opacity hover:text-foreground [@media(hover:hover)]:opacity-0 [@media(hover:hover)]:group-hover:opacity-100"
               >
                 <X className="size-2.5" />
               </button>
