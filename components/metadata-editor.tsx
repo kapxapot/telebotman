@@ -266,7 +266,7 @@ export function MetadataEditor({ languageCode }: MetadataEditorProps) {
               {!isDefault && defaultMetadata && (
                 <SyncFromDefaultButton onClick={() => setName(defaultMetadata.name)} />
               )}
-              {!isDefault && (
+              {!isDefault && name && (
                 <ClearFieldButton onClick={() => setName("")} />
               )}
             </div>
@@ -292,7 +292,7 @@ export function MetadataEditor({ languageCode }: MetadataEditorProps) {
               {!isDefault && defaultMetadata && (
                 <SyncFromDefaultButton onClick={() => setShortDescription(defaultMetadata.short_description)} />
               )}
-              {!isDefault && (
+              {!isDefault && shortDescription && (
                 <ClearFieldButton onClick={() => setShortDescription("")} />
               )}
             </div>
@@ -317,7 +317,7 @@ export function MetadataEditor({ languageCode }: MetadataEditorProps) {
               {!isDefault && defaultMetadata && (
                 <SyncFromDefaultButton onClick={() => setDescription(defaultMetadata.description)} />
               )}
-              {!isDefault && (
+              {!isDefault && description && (
                 <ClearFieldButton onClick={() => setDescription("")} />
               )}
             </div>
@@ -338,7 +338,7 @@ export function MetadataEditor({ languageCode }: MetadataEditorProps) {
         <CommandsEditor
           commands={commands}
           onChange={setCommands}
-          onResetToDefault={!isDefault ? () => setCommands([]) : undefined}
+          onResetToDefault={!isDefault && commands.length > 0 ? () => setCommands([]) : undefined}
           onSyncFromDefault={!isDefault && defaultMetadata ? () => {
             const defaultCmds = defaultMetadata.commands;
             const existingNames = new Set(commands.map((c) => c.command));
