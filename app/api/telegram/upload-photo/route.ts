@@ -41,7 +41,11 @@ export async function POST(request: Request) {
       .png()
       .toBuffer();
 
-    await uploadProfilePhoto(token, processed.buffer, file.name, "image/png");
+    const arrayBuffer = processed.buffer.slice(
+      processed.byteOffset,
+      processed.byteOffset + processed.byteLength,
+    ) as ArrayBuffer;
+    await uploadProfilePhoto(token, arrayBuffer, file.name, "image/png");
 
     return NextResponse.json({ ok: true });
   } catch (err) {
