@@ -44,7 +44,7 @@ export function BotInfoCard() {
         </div>
         <Button variant="outline" size="sm" onClick={disconnect}>
           <LogOut className="size-4" />
-          Disconnect
+          <span className="hidden sm:inline">Disconnect</span>
         </Button>
       </CardContent>
     </Card>
