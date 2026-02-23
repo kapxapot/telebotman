@@ -2,11 +2,11 @@
 
 import {
   createContext,
+  type ReactNode,
   useCallback,
   useContext,
   useMemo,
   useState,
-  type ReactNode,
 } from "react";
 import type { BotInfo, BotMetadata } from "@/lib/types";
 
@@ -19,6 +19,7 @@ interface AppState {
   botToken: string | null;
   openaiKey: string | null;
   botInfo: BotInfo | null;
+  profilePhotoUrl: string | null;
   defaultMetadata: BotMetadata | null;
   configuredLanguages: string[];
   languageMetadata: Record<string, BotMetadata>;
@@ -27,11 +28,7 @@ interface AppState {
 }
 
 interface AppActions {
-  connect: (
-    token: string,
-    openaiKey: string | null,
-    botInfo: BotInfo,
-  ) => void;
+  connect: (token: string, openaiKey: string | null, botInfo: BotInfo) => void;
   disconnect: () => void;
   setDefaultMetadata: (meta: BotMetadata) => void;
   setConfiguredLanguages: (langs: string[]) => void;
@@ -46,6 +43,7 @@ interface AppActions {
       | ((prev: ProbeProgress | null) => ProbeProgress | null),
   ) => void;
   updateLanguageMetadataCache: (langCode: string, meta: BotMetadata) => void;
+  setProfilePhotoUrl: (url: string | null) => void;
 }
 
 type AppContextValue = AppState & AppActions;
@@ -56,6 +54,7 @@ const initialState: AppState = {
   botToken: null,
   openaiKey: null,
   botInfo: null,
+  profilePhotoUrl: null,
   defaultMetadata: null,
   configuredLanguages: [],
   languageMetadata: {},
@@ -82,7 +81,12 @@ export function AppProvider({ children }: { children: ReactNode }) {
   );
 
   const disconnect = useCallback(() => {
-    setState(initialState);
+    setState((prev) => {
+      if (prev.profilePhotoUrl) {
+        URL.revokeObjectURL(prev.profilePhotoUrl);
+      }
+      return initialState;
+    });
   }, []);
 
   const setDefaultMetadata = useCallback((meta: BotMetadata) => {
@@ -139,8 +143,7 @@ export function AppProvider({ children }: { children: ReactNode }) {
     ) => {
       setState((prev) => ({
         ...prev,
-        probeProgress:
-          typeof p === "function" ? p(prev.probeProgress) : p,
+        probeProgress: typeof p === "function" ? p(prev.probeProgress) : p,
       }));
     },
     [],
@@ -156,6 +159,15 @@ export function AppProvider({ children }: { children: ReactNode }) {
     [],
   );
 
+  const setProfilePhotoUrl = useCallback((url: string | null) => {
+    setState((prev) => {
+      if (prev.profilePhotoUrl) {
+        URL.revokeObjectURL(prev.profilePhotoUrl);
+      }
+      return { ...prev, profilePhotoUrl: url };
+    });
+  }, []);
+
   const value = useMemo<AppContextValue>(
     () => ({
       ...state,
@@ -169,6 +181,7 @@ export function AppProvider({ children }: { children: ReactNode }) {
       setIsProbing,
       setProbeProgress,
       updateLanguageMetadataCache,
+      setProfilePhotoUrl,
     }),
     [
       state,
@@ -182,6 +195,7 @@ export function AppProvider({ children }: { children: ReactNode }) {
       setIsProbing,
       setProbeProgress,
       updateLanguageMetadataCache,
+      setProfilePhotoUrl,
     ],
   );
 

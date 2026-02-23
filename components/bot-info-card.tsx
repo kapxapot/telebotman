@@ -1,27 +1,31 @@
 "use client";
 
-import { useApp } from "./app-provider";
-import {
-  Card,
-  CardContent,
-} from "@/components/ui/card";
+import { ExternalLink, LogOut } from "lucide-react";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
-import { ExternalLink, LogOut } from "lucide-react";
+import { Card, CardContent } from "@/components/ui/card";
+import { useApp } from "./app-provider";
+import { ProfilePhoto } from "./profile-photo";
 
 export function BotInfoCard() {
   const { botInfo, disconnect } = useApp();
 
-  if (!botInfo) return null;
+  if (!botInfo) {
+    return null;
+  }
 
   return (
     <Card>
       <CardContent className="flex items-center justify-between">
         <div className="flex items-center gap-3">
+          <ProfilePhoto />
           <div>
             <div className="flex items-center gap-2">
               <h2 className="text-lg font-semibold">{botInfo.first_name}</h2>
-              <Badge variant="secondary" className="bg-green-100 text-green-800 dark:bg-green-900 dark:text-green-200">
+              <Badge
+                variant="secondary"
+                className="bg-green-100 text-green-800 dark:bg-green-900 dark:text-green-200"
+              >
                 Connected
               </Badge>
             </div>

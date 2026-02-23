@@ -37,6 +37,10 @@ export const deleteLocalizationRequestSchema = z.object({
   language_code: z.string().min(1, "Language code is required"),
 });
 
+export const profilePhotoRequestSchema = z.object({
+  bot_token: botTokenSchema,
+});
+
 export const translateRequestSchema = z.object({
   openai_api_key: z.string().min(1, "OpenAI API key is required"),
   source_lang: z.string().min(1),

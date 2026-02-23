@@ -3,6 +3,8 @@ import type {
   BotInfo,
   BotMetadata,
   TelegramApiResponse,
+  TelegramFile,
+  UserProfilePhotos,
 } from "./types";
 
 const BASE_URL = "https://api.telegram.org/bot";
@@ -30,20 +32,101 @@ async function callTelegram<T>(
   return data.result as T;
 }
 
+async function callTelegramFormData<T>(
+  token: string,
+  method: string,
+  formData: FormData,
+): Promise<T> {
+  const url = `${BASE_URL}${token}/${method}`;
+
+  for (const [key, value] of formData.entries()) {
+    if (value instanceof File) {
+      console.log(`[callTelegramFormData] field="${key}" file="${value.name}" type="${value.type}" size=${value.size}`);
+    } else {
+      console.log(`[callTelegramFormData] field="${key}" value="${String(value).slice(0, 20)}..."`);
+    }
+  }
+
+  const res = await fetch(url, { method: "POST", body: formData });
+  const data = (await res.json()) as TelegramApiResponse<T>;
+
+  if (!data.ok) {
+    console.error(`[callTelegramFormData] ${method} failed:`, data);
+    throw new Error(
+      data.description ?? `Telegram API error: ${method} (${data.error_code})`,
+    );
+  }
+
+  return data.result as T;
+}
+
 export async function validateToken(token: string): Promise<BotInfo> {
   return callTelegram<BotInfo>(token, "getMe");
 }
 
-export async function getDefaultMetadata(
+export async function getProfilePhoto(
   token: string,
-): Promise<BotMetadata> {
+  botId: number,
+): Promise<{ buffer: ArrayBuffer; contentType: string } | null> {
+  const photos = await callTelegram<UserProfilePhotos>(
+    token,
+    "getUserProfilePhotos",
+    { user_id: botId, limit: 1 },
+  );
+
+  if (photos.total_count === 0 || photos.photos.length === 0) {
+    return null;
+  }
+
+  const sizes = photos.photos[0];
+  const largest = sizes[sizes.length - 1];
+
+  const fileInfo = await callTelegram<TelegramFile>(token, "getFile", {
+    file_id: largest.file_id,
+  });
+
+  if (!fileInfo.file_path) {
+    return null;
+  }
+
+  const fileUrl = `https://api.telegram.org/file/bot${token}/${fileInfo.file_path}`;
+  const fileRes = await fetch(fileUrl);
+
+  if (!fileRes.ok) {
+    throw new Error(`Failed to download profile photo: ${fileRes.status}`);
+  }
+
+  const buffer = await fileRes.arrayBuffer();
+  const contentType = fileRes.headers.get("content-type") ?? "image/jpeg";
+
+  return { buffer, contentType };
+}
+
+export async function uploadProfilePhoto(
+  token: string,
+  photoBuffer: ArrayBuffer,
+  filename: string,
+  contentType: string,
+): Promise<void> {
+  const file = new File([photoBuffer], filename, { type: contentType });
+  const formData = new FormData();
+  formData.append("photo_file", file);
+  formData.append(
+    "photo",
+    JSON.stringify({ type: "static", photo: "attach://photo_file" }),
+  );
+  await callTelegramFormData(token, "setMyProfilePhoto", formData);
+}
+
+export async function removeProfilePhoto(token: string): Promise<void> {
+  await callTelegram(token, "removeMyProfilePhoto");
+}
+
+export async function getDefaultMetadata(token: string): Promise<BotMetadata> {
   const [nameRes, descRes, shortDescRes, commandsRes] = await Promise.all([
     callTelegram<{ name: string }>(token, "getMyName"),
     callTelegram<{ description: string }>(token, "getMyDescription"),
-    callTelegram<{ short_description: string }>(
-      token,
-      "getMyShortDescription",
-    ),
+    callTelegram<{ short_description: string }>(token, "getMyShortDescription"),
     callTelegram<BotCommand[]>(token, "getMyCommands"),
   ]);
 
