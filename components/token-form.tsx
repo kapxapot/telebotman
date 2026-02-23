@@ -66,8 +66,9 @@ export function TokenForm() {
   }
 
   return (
-    <div className="flex min-h-dvh flex-col items-center justify-center p-4">
-      <Card className="w-full max-w-md">
+    <div className="flex min-h-dvh flex-col items-center p-4">
+      <div className="flex w-full flex-1 items-center justify-center">
+        <Card className="w-full max-w-md">
         <CardHeader className="text-center">
           <Image
             src="/logo.png"
@@ -172,6 +173,7 @@ export function TokenForm() {
           </form>
         </CardContent>
       </Card>
+      </div>
       <Footer />
     </div>
   );

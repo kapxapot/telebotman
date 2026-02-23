@@ -15,16 +15,20 @@ function AppContent() {
   }
 
   return (
-    <div className="mx-auto max-w-4xl space-y-4 p-4">
-      <div className="flex items-center">
-        <Image src="/logo-head.png" alt="Logo" width={64} height={64} />
-        <h1 className="text-xl font-medium">
-          Telegram Bot Manager
-        </h1>
+    <div className="mx-auto flex min-h-dvh max-w-4xl flex-col p-4">
+      <div className="space-y-4">
+        <div className="flex items-center">
+          <Image src="/logo-head.png" alt="Logo" width={64} height={64} />
+          <h1 className="text-xl font-medium">
+            Telegram Bot Manager
+          </h1>
+        </div>
+        <BotInfoCard />
+        <LanguageTabs />
       </div>
-      <BotInfoCard />
-      <LanguageTabs />
-      <Footer />
+      <div className="mt-auto">
+        <Footer />
+      </div>
     </div>
   );
 }
